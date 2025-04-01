@@ -81,33 +81,37 @@ export default function Experience() {
     <section id="experience" className="mx-auto max-w-6xl border-t px-4 py-16">
       <h2 className="mb-12 text-xl font-semibold">Work Experience</h2>
 
-      <ul className="space-y-24">
-        {experiences.map((exp, idx) => (
-          <li key={idx} className="flex flex-col items-stretch md:flex-row">
-            <div className="relative hidden md:flex md:w-12 md:flex-col md:items-center">
-              <div className="z-10 mb-2 mt-2 h-3 w-3 rounded-full border border-white bg-yellow-400 shadow" />
-              {idx !== experiences.length - 1 && <div className="mt-1 w-px flex-1 bg-gray-300" />}
-            </div>
+      <div className="relative pl-6 md:pl-12">
+        {/* 외부 세로선 */}
+        <div className="absolute bottom-0 left-3 top-0 w-[1.5px] bg-yellow-300" />
 
-            <div className="mb-6 w-full text-center md:mb-0 md:w-1/3 md:pl-6 md:text-left">
-              <p className="text-lg font-semibold">{exp.company}</p>
-              <p className="text-sm text-gray-500">{exp.period}</p>
-            </div>
+        <ul className="space-y-24">
+          {experiences.map((exp, idx) => (
+            <li key={idx} className="relative flex flex-col items-stretch md:flex-row">
+              <div className="mb-6 w-full text-center md:mb-0 md:w-1/3 md:pl-6 md:text-left">
+                <p className="text-lg font-semibold">{exp.company}</p>
+                <p className="text-sm text-gray-500">{exp.period}</p>
+              </div>
 
-            <div className="w-full md:w-2/3 md:pl-6">
-              {exp.projects.map((proj, pIdx) => (
-                <div key={pIdx} className="mb-12">
-                  <p className="text-lg font-bold">{proj.title}</p>
-                  <p className="mb-2 text-sm font-semibold text-gray-600">개발환경: {proj.env}</p>
-                  <ul className="list-disc space-y-1 pl-5 text-sm text-gray-700">
-                    {proj.desc?.map((line, i) => <li key={i}>{line}</li>)}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </li>
-        ))}
-      </ul>
+              <div className="w-full md:w-2/3 md:pl-6">
+                {exp.projects.map((proj, pIdx) => (
+                  <div key={pIdx} className="mb-12">
+                    <p className="text-lg font-bold">{proj.title}</p>
+                    {proj.env && (
+                      <p className="mb-2 text-sm font-semibold text-gray-600">
+                        개발환경: {proj.env}
+                      </p>
+                    )}
+                    <ul className="list-disc space-y-1 pl-5 text-sm text-gray-700">
+                      {proj.desc?.map((line, i) => <li key={i}>{line}</li>)}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   )
 }

@@ -1,3 +1,3 @@
 export default function Home() {
-  return <div>apps</div>;
+  return <div>kimhayeon</div>;
 }

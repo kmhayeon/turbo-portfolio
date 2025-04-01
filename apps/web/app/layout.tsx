@@ -1,5 +1,6 @@
-import './globals.css'
 import React from 'react'
+import './globals.css'
+import 'aos/dist/aos.css'
 
 export const metadata = {
   title: 'Turbo Portfolio',
@@ -9,7 +10,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+    <body className="font-nanum">{children}</body>
     </html>
   )
 }

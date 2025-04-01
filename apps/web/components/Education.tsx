@@ -12,7 +12,7 @@ export default function Education() {
         </li>
         <li>
           <p className="text-sm text-gray-500">2010.03 ~ 2013.02</p>
-          <p className="font-semibold">숭림고등학교</p>
+          <p className="font-semibold">송림고등학교</p>
         </li>
       </ul>
     </section>

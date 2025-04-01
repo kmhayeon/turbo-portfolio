@@ -82,8 +82,7 @@ export default function Experience() {
       <h2 className="mb-12 text-xl font-semibold">Work Experience</h2>
 
       <div className="relative pl-6 md:pl-12">
-        {/* 외부 세로선 */}
-        <div className="absolute bottom-0 left-3 top-0 w-[1.5px] bg-yellow-300" />
+        <div className="absolute bottom-0 left-[14px] top-0 hidden w-[1.5px] bg-yellow-300 sm:block md:left-[12px]" />
 
         <ul className="space-y-24">
           {experiences.map((exp, idx) => (

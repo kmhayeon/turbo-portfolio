@@ -6,9 +6,7 @@ module.exports = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        nanum: ['"Nanum Square Round"', 'sans-serif'],
-      },
+      nanum: ['NanumSquareRound', 'sans-serif'],
     },
   },
   plugins: [],

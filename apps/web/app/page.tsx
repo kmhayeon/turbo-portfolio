@@ -13,7 +13,6 @@ export default function Home() {
   return (
     <main className="scroll-smooth">
       <Header />
-      <div className="pt-20" />
       <Hero />
       <About />
       <Education />

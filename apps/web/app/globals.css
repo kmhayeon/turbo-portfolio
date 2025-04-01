@@ -3,25 +3,25 @@
 @tailwind utilities;
 
 @font-face {
-    font-family: 'NanumSquareRound';
-    src: url('./fonts/NanumSquareRoundR.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'NanumSquareRound';
+  src: url('./fonts/NanumSquareRoundR.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-    font-family: 'NanumSquareRound';
-    src: url('./fonts/NanumSquareRoundB.ttf') format('truetype');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
+  font-family: 'NanumSquareRound';
+  src: url('./fonts/NanumSquareRoundB.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'NanumSquareRound', sans-serif;
+  font-family: 'NanumSquareRound', sans-serif;
 }

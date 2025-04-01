@@ -1,6 +1,6 @@
-"scripts": {
-  "dev": "turbo dev",
-  "build": "turbo build",
-  "lint": "turbo lint",
-  "format": "prettier --write ."
-}
+node_modules
+build
+dist
+.next
+out
+pnpm-lock.yaml

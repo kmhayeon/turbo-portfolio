@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
-    "next": "^15.2.1",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "next": "15.3.0-canary.26",
+    "react": "19.2.0-canary-63779030-20250328",
+    "react-dom": "19.2.0-canary-63779030-20250328"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

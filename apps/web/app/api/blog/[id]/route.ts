@@ -1,24 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { prisma } from '../../../../lib/prisma'
 
-const prisma = new PrismaClient()
+export async function GET(req: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params
 
-export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
-  const post = await prisma.blogPost.findUnique({ where: { id: Number(params.id) } })
-  if (!post) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  const post = await prisma.blogPost.findUnique({
+    where: { id: Number(id) },
+  })
+
+  if (!post) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+
   return NextResponse.json(post)
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params
   const { title, content } = await req.json()
+
   const updated = await prisma.blogPost.update({
-    where: { id: Number(params.id) },
+    where: { id: Number(id) },
     data: { title, content },
   })
+
   return NextResponse.json(updated)
 }
 
-export async function DELETE(_: NextRequest, { params }: { params: { id: string } }) {
-  await prisma.blogPost.delete({ where: { id: Number(params.id) } })
+export async function DELETE(req: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params
+
+  await prisma.blogPost.delete({
+    where: { id: Number(id) },
+  })
+
   return NextResponse.json({ message: '삭제 완료' })
 }

@@ -3,8 +3,11 @@ import './globals.css'
 import 'aos/dist/aos.css'
 
 export const metadata = {
-  title: 'Turbo Portfolio',
-  description: 'Made with Next.js 14 + Tailwind CSS + Turborepo',
+  title: 'HAYEON',
+  description: 'hayeon portfolio',
+  icons: {
+    icon: '/favicon.ico',
+  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

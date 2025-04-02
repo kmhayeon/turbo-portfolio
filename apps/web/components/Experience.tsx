@@ -16,23 +16,45 @@ export default function Experience() {
   const experiences: I_ExperienceItem[] = [
     {
       company: 'VivityAI',
-      period: '2022.12 ~ 2023.04',
+      period: '2023.08 ~ 재직중',
       projects: [
         {
-          title: '자사 홈페이지 개발',
+          title: '한화 Ocean Draft Reading System',
           env: 'Typescript / React / Next.js / Styled Components',
-          desc: ['VivityAI 자사 홈페이지 개발/운영/배포'],
+          desc: ['웹소켓 기반 실시간 데이터 처리', '배의 흘수선 실시간 측정 페이지 개발'],
         },
         {
-          title: '웹뷰 개발',
+          title: 'Vivity Analystics',
           env: 'Typescript / React / Next.js / Styled Components / Tanstack Query',
-          desc: ['서비스 웹뷰 데모 개발/운영/배포'],
+          desc: [
+            '외부 중공업 데이터를 차트로 시각화하는 대시보드 시스템 개발',
+            'JWT 토큰 기반 로그인 기능 및 유저 역할 관리',
+            '데이터 시각화를 통한 사용자 경험 개선',
+          ],
+        },
+        {
+          title: '한화 Ocean Drone',
+          env: 'Typescript / React / Next.js / Styled Components / Tanstack Query / Zustand',
+          desc: [
+            '드론이 촬영한 날짜별 중공업 현황 대시보드 개발',
+            '오전/오후별 블록 정보 확인 및 캐드 이미지 수정 기능 개발',
+            'yard 이미지의 좌표값 매칭 및 시각화',
+          ],
+        },
+        {
+          title: 'Total Hyper Compressor / EVA Vibrating Screen',
+          env: 'Typescript / React / Next.js / Styled Components',
+          desc: [
+            'Hyper Compressor 및 EVA Vibrating Screen 시스템 개발',
+            'React Slick 버그 수정 및 스와이프 기능 개발',
+            '실린더 에러 확인 페이지 개발',
+          ],
         },
       ],
     },
     {
       company: '에비드넷',
-      period: '2021.07 ~ 2022.07',
+      period: '2021.07 ~ 2022.08',
       projects: [
         {
           title: '메디팡팡 앱 개발',
@@ -56,7 +78,7 @@ export default function Experience() {
     },
     {
       company: '리버스랩',
-      period: '2020.06 ~ 2021.02',
+      period: '2020.06 ~ 2021.03',
       projects: [
         {
           title: '자사 홈페이지 개발 및 유지보수',
@@ -82,7 +104,7 @@ export default function Experience() {
       <h2 className="mb-12 text-xl font-semibold">Work Experience</h2>
 
       <div className="relative pl-6 md:pl-12">
-        <div className="absolute bottom-0 left-[14px] top-0 hidden w-[1.5px] bg-yellow-300 sm:block md:left-[12px]" />
+        <div className="absolute bottom-0 left-[14px] top-0 hidden w-[1.5px] bg-gray-300 sm:block md:left-[12px]" />
 
         <ul className="space-y-24">
           {experiences.map((exp, idx) => (

@@ -7,8 +7,10 @@ export default function Skills() {
       'React',
       'React Native',
       'Styled Components',
-      'TailwindCss',
-      'Context API',
+      'Tailwind CSS',
+      'Vanila extract',
+      'Recoil',
+      'Zustand',
       'GraphQL',
       'Tanstack Query',
     ],
@@ -27,7 +29,7 @@ export default function Skills() {
                 {skills.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-full border border-yellow-500 px-5 py-2 text-sm text-gray-700"
+                    className="rounded-full border border-gray-500 px-5 py-2 text-sm text-gray-700"
                   >
                     {skill}
                   </span>

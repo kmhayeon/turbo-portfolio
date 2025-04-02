@@ -100,7 +100,10 @@ export default function Experience() {
   ]
 
   return (
-    <section id="experience" className="mx-auto max-w-6xl border-t px-4 py-16">
+    <section
+      id="experience"
+      className="mx-auto w-full max-w-6xl border-t px-4 py-12 sm:px-6 md:px-8 lg:px-12"
+    >
       <h2 className="mb-12 text-xl font-semibold">Work Experience</h2>
 
       <div className="relative pl-6 md:pl-12">

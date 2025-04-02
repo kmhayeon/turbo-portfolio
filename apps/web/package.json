@@ -11,6 +11,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
+    "@prisma/client": "^6.5.0",
     "@repo/ui": "workspace:*",
     "aos": "^2.3.4",
     "lucide-react": "^0.486.0",
@@ -26,6 +27,7 @@
     "@types/react": "19.0.12",
     "@types/react-dom": "19.0.4",
     "eslint": "^9.23.0",
+    "prisma": "^6.5.0",
     "typescript": "5.8.2"
   }
 }

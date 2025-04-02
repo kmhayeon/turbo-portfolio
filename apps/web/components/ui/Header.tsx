@@ -55,7 +55,7 @@ export default function Header() {
               { label: 'Experience', href: '#experience' },
               { label: 'Portfolio', href: '#portfolio' },
               { label: 'Skills', href: '#skills' },
-              { label: 'Blog', href: '/blog' },
+              // { label: 'Blog', href: '/blog' },
             ].map(({ label, href }) => (
               <a
                 key={href}

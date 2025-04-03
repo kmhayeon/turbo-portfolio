@@ -111,7 +111,7 @@ export default function BlogDetailPage(props: any) {
           <div className="flex justify-end gap-2">
             <button
               onClick={handleSave}
-              className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+              className="rounded bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-700"
             >
               저장
             </button>
@@ -139,7 +139,7 @@ export default function BlogDetailPage(props: any) {
             <button
               title="수정"
               onClick={handleEdit}
-              className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
+              className="px-4 py-2 text-sm text-gray-900 hover:text-gray-700"
             >
               <Pencil size={18} />
             </button>
@@ -200,7 +200,7 @@ export default function BlogDetailPage(props: any) {
               <div className="mt-2 flex justify-end">
                 <button
                   onClick={handleCommentSubmit}
-                  className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+                  className="rounded bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-700"
                 >
                   댓글 등록
                 </button>

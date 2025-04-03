@@ -78,7 +78,7 @@ export default function Page() {
 
         <button
           onClick={() => router.push('/blog/write')}
-          className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
+          className="rounded bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-700"
         >
           글쓰기
         </button>

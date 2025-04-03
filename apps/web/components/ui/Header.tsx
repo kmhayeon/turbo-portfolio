@@ -32,12 +32,12 @@ export default function Header() {
           <a href="#skills" className="hover:text-gray-400">
             Skills
           </a>
-          {/*<a*/}
-          {/*  href="/blog"*/}
-          {/*  className="ml-4 rounded-full border border-gray-300 px-4 py-1 transition-colors hover:bg-gray-100"*/}
-          {/*>*/}
-          {/*  Blog*/}
-          {/*</a>*/}
+          <a
+            href="/blog"
+            className="ml-4 rounded-full border border-gray-300 px-4 py-1 transition-colors hover:bg-gray-100"
+          >
+            Blog
+          </a>
         </nav>
 
         <button className="md:hidden" onClick={toggleMenu}>
@@ -55,7 +55,7 @@ export default function Header() {
               { label: 'Experience', href: '#experience' },
               { label: 'Portfolio', href: '#portfolio' },
               { label: 'Skills', href: '#skills' },
-              // { label: 'Blog', href: '/blog' },
+              { label: 'Blog', href: '/blog' },
             ].map(({ label, href }) => (
               <a
                 key={href}

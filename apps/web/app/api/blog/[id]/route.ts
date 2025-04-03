@@ -30,9 +30,13 @@ export async function PUT(req: NextRequest, context: any) {
 export async function DELETE(req: NextRequest, context: any) {
   const { id } = context.params
 
-  await prisma.blogPost.delete({
-    where: { id: Number(id) },
-  })
+  try {
+    await prisma.blogPost.delete({
+      where: { id: Number(id) },
+    })
 
-  return NextResponse.json({ message: '삭제 완료' })
+    return NextResponse.json({ message: '삭제 완료' })
+  } catch (error) {
+    return NextResponse.json({ error: '삭제 중 오류 발생' }, { status: 500 })
+  }
 }

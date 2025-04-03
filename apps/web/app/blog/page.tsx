@@ -16,13 +16,16 @@ export default function Page() {
   const [content, setContent] = useState('')
   const [editId, setEditId] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   const router = useRouter()
 
   useEffect(() => {
+    setIsLoading(true)
     fetch('/api/blog')
       .then((res) => res.json())
       .then((data: BlogPost[]) => setPosts(data))
+      .finally(() => setIsLoading(false))
   }, [])
 
   const handleSubmit = async () => {
@@ -43,7 +46,6 @@ export default function Page() {
         headers: { 'Content-Type': 'application/json' },
       })
       const newPost: BlogPost = await res.json()
-
       setPosts((prev) => [...prev, newPost])
       setIsModalOpen(false)
     }
@@ -84,29 +86,36 @@ export default function Page() {
         </button>
       </div>
 
-      <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {posts.map((post) => (
-          <li
-            key={post.id}
-            onClick={() => router.push(`/blog/${post.id}`)}
-            className="flex min-h-[160px] cursor-pointer flex-col rounded-md border border-gray-200 p-4 shadow-sm transition-shadow hover:shadow-md"
-          >
-            <div className="mb-2 flex items-start justify-between">
-              <h3 className="break-words text-lg font-semibold text-gray-800">{post.title}</h3>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleDelete(post.id)
-                }}
-                className="text-gray-400 hover:text-red-500"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-            <p className="line-clamp-5 break-words text-sm text-gray-600">{post.content}</p>
-          </li>
-        ))}
-      </ul>
+      {isLoading ? (
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
+          불러오는 중...
+        </div>
+      ) : (
+        <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {posts.map((post) => (
+            <li
+              key={post.id}
+              onClick={() => router.push(`/blog/${post.id}`)}
+              className="flex min-h-[160px] cursor-pointer flex-col rounded-md border border-gray-200 p-4 shadow-sm transition-shadow hover:shadow-md"
+            >
+              <div className="mb-2 flex items-start justify-between">
+                <h3 className="break-words text-lg font-semibold text-gray-800">{post.title}</h3>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleDelete(post.id)
+                  }}
+                  className="text-gray-400 hover:text-red-500"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+              <p className="line-clamp-5 break-words text-sm text-gray-600">{post.content}</p>
+            </li>
+          ))}
+        </ul>
+      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">

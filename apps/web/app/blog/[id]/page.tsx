@@ -89,7 +89,10 @@ export default function BlogDetailPage(props: any) {
   if (!post)
     return (
       <section className="mx-auto w-full max-w-6xl border-t px-4 py-12 sm:px-6 md:px-8 lg:px-12">
-        <p className="p-4">불러오는 중...</p>
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
+          불러오는 중...
+        </div>
       </section>
     )
 

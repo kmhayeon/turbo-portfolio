@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/prisma'
-export async function GET(req: NextRequest, { params }: { params: { postId: string } }) {
-  const postId = Number(params.postId)
+export async function GET(req: NextRequest) {
+  const url = new URL(req.url)
+  const postId = url.pathname.split('/').pop()
+
+  if (!postId) {
+    return NextResponse.json({ error: 'No postId provided' }, { status: 400 })
+  }
 
   const comments = await prisma.comment.findMany({
-    where: { postId },
+    where: { postId: Number(postId) },
     orderBy: { createdAt: 'asc' },
   })
 

@@ -16,16 +16,20 @@ export async function GET(req: NextRequest) {
   return NextResponse.json(comments)
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { postId: string } }) {
-  const commentId = Number(params.postId)
+export async function DELETE(req: NextRequest) {
+  const commentId = req.nextUrl.pathname.split('/').pop()
+
+  if (!commentId) {
+    return NextResponse.json({ error: 'No commentId provided' }, { status: 400 })
+  }
 
   try {
     await prisma.comment.delete({
-      where: { id: commentId },
+      where: { id: Number(commentId) },
     })
 
-    return NextResponse.json({ message: '삭제 완료' })
-  } catch (err) {
-    return NextResponse.json({ error: '삭제 실패' }, { status: 500 })
+    return NextResponse.json({ message: '댓글 삭제 완료' })
+  } catch (error) {
+    return NextResponse.json({ error: '댓글 삭제 실패' }, { status: 500 })
   }
 }

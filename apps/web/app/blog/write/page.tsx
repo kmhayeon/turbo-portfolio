@@ -56,16 +56,16 @@ export default function WritePage() {
         />
         <div className="flex justify-end gap-2">
           <button
+            onClick={handleSubmit}
+            className="rounded bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-700"
+          >
+            등록
+          </button>
+          <button
             onClick={() => router.back()}
             className="rounded border border-gray-300 px-4 py-2 text-sm hover:bg-gray-100"
           >
             취소
-          </button>
-          <button
-            onClick={handleSubmit}
-            className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
-          >
-            등록
           </button>
         </div>
       </div>

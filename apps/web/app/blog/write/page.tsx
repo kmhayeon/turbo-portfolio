@@ -29,7 +29,7 @@ export default function WritePage() {
   }
 
   return (
-    <section className="px-4 py-8">
+    <section className="mx-auto w-full max-w-6xl border-t px-4 py-12 sm:px-6 md:px-8 lg:px-12">
       <div className="mb-6 flex items-center gap-2">
         <button
           onClick={() => router.back()}
@@ -48,7 +48,7 @@ export default function WritePage() {
           onChange={(e) => setTitle(e.target.value)}
         />
         <textarea
-          className="mb-4 w-full border p-2"
+          className="mb-4 h-[350px] w-full border p-2"
           placeholder="내용을 입력하세요"
           rows={6}
           value={content}

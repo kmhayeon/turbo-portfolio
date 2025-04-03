@@ -8,8 +8,20 @@ datasource db {
 }
 
 model BlogPost {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String
-  content   String
-  createdAt DateTime @default(now())
+  content   String    @db.Text
+  createdAt DateTime  @default(now())
+  comments  Comment[]
 }
+
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  postId    Int
+  content   String    @db.Text
+  createdAt DateTime  @default(now())
+
+  post      BlogPost  @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+

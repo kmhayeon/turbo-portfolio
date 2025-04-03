@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Trash2 } from 'lucide-react'
 
 type BlogPost = {
   id: number
@@ -61,7 +61,10 @@ export default function Page() {
   }
 
   return (
-    <section id="blog" className="px-4 py-8">
+    <section
+      id="blog"
+      className="mx-auto w-full max-w-6xl border-t px-4 py-12 sm:px-6 md:px-8 lg:px-12"
+    >
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <button
@@ -88,20 +91,19 @@ export default function Page() {
             onClick={() => router.push(`/blog/${post.id}`)}
             className="flex min-h-[160px] cursor-pointer flex-col rounded-md border border-gray-200 p-4 shadow-sm transition-shadow hover:shadow-md"
           >
-            <div className="flex items-start justify-between">
-              <div className="flex-1 pr-4">
-                <h3 className="break-words text-lg font-semibold text-gray-800">{post.title}</h3>
-              </div>
+            <div className="mb-2 flex items-start justify-between">
+              <h3 className="break-words text-lg font-semibold text-gray-800">{post.title}</h3>
               <button
                 onClick={(e) => {
                   e.stopPropagation()
                   handleDelete(post.id)
                 }}
-                className="shrink-0 rounded-md border border-red-500 px-2 py-0.5 text-xs text-red-600 hover:bg-red-50 focus:outline-none focus:ring-0"
+                className="text-gray-400 hover:text-red-500"
               >
-                삭제
+                <Trash2 size={16} />
               </button>
             </div>
+            <p className="line-clamp-5 break-words text-sm text-gray-600">{post.content}</p>
           </li>
         ))}
       </ul>

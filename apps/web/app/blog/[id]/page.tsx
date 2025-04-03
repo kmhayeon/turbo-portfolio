@@ -114,7 +114,12 @@ export default function BlogDetailPage(props: any) {
           <div className="flex justify-end gap-2">
             <button
               onClick={handleSave}
-              className="rounded bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-700"
+              disabled={!editTitle.trim() || !editContent.trim()}
+              className={`rounded px-4 py-2 text-sm text-white ${
+                !editTitle.trim() || !editContent.trim()
+                  ? 'cursor-not-allowed bg-gray-400'
+                  : 'bg-gray-900 hover:bg-gray-700'
+              } `}
             >
               저장
             </button>
@@ -203,7 +208,12 @@ export default function BlogDetailPage(props: any) {
               <div className="mt-2 flex justify-end">
                 <button
                   onClick={handleCommentSubmit}
-                  className="rounded bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-700"
+                  disabled={!newComment.trim()}
+                  className={`rounded px-4 py-2 text-sm text-white ${
+                    !newComment.trim()
+                      ? 'cursor-not-allowed bg-gray-400'
+                      : 'bg-gray-900 hover:bg-gray-700'
+                  } `}
                 >
                   댓글 등록
                 </button>

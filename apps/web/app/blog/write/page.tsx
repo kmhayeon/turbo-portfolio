@@ -57,7 +57,12 @@ export default function WritePage() {
         <div className="flex justify-end gap-2">
           <button
             onClick={handleSubmit}
-            className="rounded bg-gray-900 px-4 py-2 text-sm text-white hover:bg-gray-700"
+            disabled={!title.trim() || !content.trim()}
+            className={`rounded px-4 py-2 text-sm text-white ${
+              !title.trim() || !content.trim()
+                ? 'cursor-not-allowed bg-gray-400'
+                : 'bg-gray-900 hover:bg-gray-700'
+            } `}
           >
             등록
           </button>

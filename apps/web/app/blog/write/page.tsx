@@ -2,10 +2,14 @@
 
 import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { Editor } from '@toast-ui/react-editor'
 import { ArrowLeft } from 'lucide-react'
 import Toast from '../../../../web/components/ui/Toast'
-import '@toast-ui/editor/dist/toastui-editor.css'
+
+const ToastEditor = dynamic(() => import('@toast-ui/react-editor').then(mod => mod.Editor), {
+  ssr: false,
+})
 
 export default function WritePage() {
   const [title, setTitle] = useState('')
@@ -56,9 +60,9 @@ export default function WritePage() {
           onChange={(e) => setTitle(e.target.value)}
         />
 
-        <Editor
+        <ToastEditor
           ref={editorRef}
-          initialValue={""}
+          initialValue={"내용을 입력해주세요."}
           previewStyle="vertical"
           height="400px"
           initialEditType="wysiwyg"

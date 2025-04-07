@@ -15,13 +15,18 @@ model BlogPost {
   comments  Comment[]
 }
 
-
 model Comment {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   postId    Int
-  content   String    @db.Text
-  createdAt DateTime  @default(now())
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  post      BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-  post      BlogPost  @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@index([postId], map: "Comment_postId_fkey")
 }
 
+model VisitorCount {
+  id        Int      @id @default(1)
+  count     Int      @default(0)
+  updatedAt DateTime @updatedAt
+}

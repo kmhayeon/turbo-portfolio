@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Editor } from '@toast-ui/react-editor'
 import { ArrowLeft } from 'lucide-react'
 import Toast from '../../../../web/components/ui/Toast'
+import '@toast-ui/editor/dist/toastui-editor.css'
 
 export default function WritePage() {
   const [title, setTitle] = useState('')
@@ -11,6 +13,12 @@ export default function WritePage() {
   const [showToast, setShowToast] = useState(false)
 
   const router = useRouter()
+  const editorRef = useRef<Editor>(null)
+
+  const handleEditorChange = () => {
+    const markdown = editorRef.current?.getInstance().getMarkdown() || ''
+    setContent(markdown)
+  }
 
   const handleSubmit = async () => {
     if (!title.trim() || !content.trim()) return
@@ -47,14 +55,19 @@ export default function WritePage() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <textarea
-          className="mb-4 h-[350px] w-full border p-2"
-          placeholder="내용을 입력하세요"
-          rows={6}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+
+        <Editor
+          ref={editorRef}
+          initialValue={"내용을 입력해주세요."}
+          previewStyle="vertical"
+          height="400px"
+          initialEditType="markdown"
+          useCommandShortcut={true}
+          hideModeSwitch={true}
+          onChange={handleEditorChange}
         />
-        <div className="flex justify-end gap-2">
+
+        <div className="mt-4 flex justify-end gap-2">
           <button
             onClick={handleSubmit}
             disabled={!title.trim() || !content.trim()}

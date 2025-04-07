@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Trash2 } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
 
 type BlogPost = {
   id: number
@@ -111,7 +112,9 @@ export default function Page() {
                   <Trash2 size={16} />
                 </button>
               </div>
-              <p className="line-clamp-5 break-words text-sm text-gray-600">{post.content}</p>
+              <div className="line-clamp-5 break-words text-sm text-gray-600 prose prose-sm max-w-none">
+                <ReactMarkdown>{post.content}</ReactMarkdown>
+              </div>
             </li>
           ))}
         </ul>

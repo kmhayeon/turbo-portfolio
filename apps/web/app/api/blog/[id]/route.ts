@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../../lib/prisma'
 
-export async function GET(req: NextRequest, context: any) {
-  const { id } = context.params
+type Params = {
+  params: Promise<{ id: string }>
+}
+
+export async function GET(req: NextRequest, context: Params) {
+  const { id } = await context.params
 
   const post = await prisma.blogPost.findUnique({
     where: { id: Number(id) },
@@ -15,8 +19,8 @@ export async function GET(req: NextRequest, context: any) {
   return NextResponse.json(post)
 }
 
-export async function PUT(req: NextRequest, context: any) {
-  const { id } = context.params
+export async function PUT(req: NextRequest, context: Params) {
+  const { id } = await context.params
   const { title, content } = await req.json()
 
   const updated = await prisma.blogPost.update({
@@ -27,8 +31,8 @@ export async function PUT(req: NextRequest, context: any) {
   return NextResponse.json(updated)
 }
 
-export async function DELETE(req: NextRequest, context: any) {
-  const { id } = context.params
+export async function DELETE(req: NextRequest, context: Params) {
+  const { id } = await context.params
 
   try {
     await prisma.blogPost.delete({

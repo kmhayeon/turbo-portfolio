@@ -1,8 +1,11 @@
 'use client'
 
-import { useEffect, useState, use } from 'react'
+import { useEffect, useRef, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, X, Pencil } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import { Editor } from '@toast-ui/react-editor'
+import '@toast-ui/editor/dist/toastui-editor.css'
 
 type BlogPost = {
   id: number
@@ -26,8 +29,9 @@ export default function BlogDetailPage(props: any) {
   const [comments, setComments] = useState<Comment[]>([])
   const [newComment, setNewComment] = useState('')
   const [toastMsg, setToastMsg] = useState('')
-
   const router = useRouter()
+
+  const editorRef = useRef<Editor>(null)
 
   // 게시글 불러오기
   useEffect(() => {
@@ -60,15 +64,18 @@ export default function BlogDetailPage(props: any) {
   }
 
   const handleSave = async () => {
+    const markdown = editorRef.current?.getInstance().getMarkdown() || ''
+
     const res = await fetch(`/api/blog/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: editTitle, content: editContent }),
+      body: JSON.stringify({ title: editTitle, content: markdown }),
     })
 
     const updated = await res.json()
     setPost(updated)
     setIsEditing(false)
+    setEditContent(updated.content)
     router.refresh()
   }
 
@@ -88,7 +95,7 @@ export default function BlogDetailPage(props: any) {
 
   if (!post)
     return (
-      <section className="mx-auto w-full max-w-6xl border-t px-4 py-12 sm:px-6 md:px-8 lg:px-12">
+      <section className="mx-auto w-full max-w-6xl border-t px-4 py-12">
         <div className="flex items-center gap-2 text-sm text-gray-500">
           <div className="h-4 w-4 animate-spin rounded-full border-2 border-gray-300 border-t-transparent" />
           불러오는 중...
@@ -105,18 +112,23 @@ export default function BlogDetailPage(props: any) {
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
           />
-          <textarea
-            className="h-[350px] w-full border p-2"
-            rows={6}
-            value={editContent}
-            onChange={(e) => setEditContent(e.target.value)}
+
+          <Editor
+            ref={editorRef}
+            initialValue={editContent}
+            previewStyle="vertical"
+            height="500px"
+            initialEditType="markdown"
+            useCommandShortcut={true}
+            hideModeSwitch={true}
           />
-          <div className="flex justify-end gap-2">
+
+          <div className="flex justify-end gap-2 pt-2">
             <button
               onClick={handleSave}
-              disabled={!editTitle.trim() || !editContent.trim()}
+              disabled={!editTitle.trim()}
               className={`rounded px-4 py-2 text-sm text-white ${
-                !editTitle.trim() || !editContent.trim()
+                !editTitle.trim()
                   ? 'cursor-not-allowed bg-gray-400'
                   : 'bg-gray-900 hover:bg-gray-700'
               } `}
@@ -153,9 +165,9 @@ export default function BlogDetailPage(props: any) {
             </button>
           </div>
 
-          <p className="h-[350px] overflow-y-auto whitespace-pre-wrap break-words pr-2">
-            {post.content}
-          </p>
+          <article className="prose prose-sm max-w-none overflow-y-auto h-[500px] pr-2">
+            <ReactMarkdown>{post.content}</ReactMarkdown>
+          </article>
         </div>
       )}
 
@@ -181,7 +193,9 @@ export default function BlogDetailPage(props: any) {
                       const confirmed = window.confirm('댓글을 삭제하시겠습니까?')
                       if (!confirmed) return
 
-                      const res = await fetch(`/api/comments/${comment.id}`, { method: 'DELETE' })
+                      const res = await fetch(`/api/comments/${comment.id}`, {
+                        method: 'DELETE',
+                      })
 
                       if (res.ok) {
                         setComments((prev) => prev.filter((c) => c.id !== comment.id))

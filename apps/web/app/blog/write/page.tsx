@@ -72,7 +72,7 @@ export default function WritePage() {
         {colorSyntaxPlugin && (
           <ToastEditor
             ref={editorRef}
-            initialValue="내용을 입력해주세요."
+            initialValue=" "
             previewStyle="vertical"
             height="700px"
             initialEditType="wysiwyg"

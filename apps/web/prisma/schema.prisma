@@ -10,7 +10,7 @@ datasource db {
 model BlogPost {
   id        Int       @id @default(autoincrement())
   title     String
-  content   String    @db.Text
+  content   String    @db.LongText
   createdAt DateTime  @default(now())
   comments  Comment[]
 }

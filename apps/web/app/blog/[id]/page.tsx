@@ -132,7 +132,7 @@ export default function BlogDetailPage(props: any) {
               ref={editorRef}
               initialValue={editContent}
               previewStyle="vertical"
-              height="400px"
+              height="700px"
               initialEditType="wysiwyg"
               useCommandShortcut={true}
               hideModeSwitch={true}

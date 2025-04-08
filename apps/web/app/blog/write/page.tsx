@@ -74,7 +74,7 @@ export default function WritePage() {
             ref={editorRef}
             initialValue="내용을 입력해주세요."
             previewStyle="vertical"
-            height="400px"
+            height="700px"
             initialEditType="wysiwyg"
             useCommandShortcut={true}
             hideModeSwitch={true}

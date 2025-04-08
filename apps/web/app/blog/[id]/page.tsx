@@ -25,6 +25,10 @@ type Comment = {
   createdAt: string
 }
 
+const ToastEditor = dynamic(() => import('@toast-ui/react-editor').then(mod => mod.Editor), {
+  ssr: false,
+})
+
 export default function BlogDetailPage(props: any) {
   const { id } = use(props.params) as { id: string }
   const [post, setPost] = useState<BlogPost | null>(null)
@@ -35,12 +39,8 @@ export default function BlogDetailPage(props: any) {
   const [newComment, setNewComment] = useState('')
   const [toastMsg, setToastMsg] = useState('')
   const router = useRouter()
-
   const editorRef = useRef<Editor>(null)
 
-  const ToastEditor = dynamic(() => import('@toast-ui/react-editor').then(mod => mod.Editor), {
-    ssr: false,
-  })
 
   // 게시글 불러오기
   useEffect(() => {

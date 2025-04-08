@@ -4,7 +4,6 @@ import { useEffect, useRef, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, X, Pencil } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
-import { Editor } from '@toast-ui/react-editor'
 import '@toast-ui/editor/dist/toastui-editor.css'
 import "../../../styles/tui-color-picker.css";
 import rehypeRaw from 'rehype-raw'
@@ -39,7 +38,7 @@ export default function BlogDetailPage(props: any) {
   const [newComment, setNewComment] = useState('')
   const [toastMsg, setToastMsg] = useState('')
   const router = useRouter()
-  const editorRef = useRef<Editor>(null)
+  const editorRef = useRef<any>(null)
 
 
   // 게시글 불러오기

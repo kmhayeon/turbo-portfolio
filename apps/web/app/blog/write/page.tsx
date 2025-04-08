@@ -3,7 +3,6 @@
 import { useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { Editor } from '@toast-ui/react-editor'
 import { ArrowLeft } from 'lucide-react'
 import Toast from '../../../../web/components/ui/Toast'
 import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
@@ -21,7 +20,7 @@ export default function WritePage() {
   const [showToast, setShowToast] = useState(false)
 
   const router = useRouter()
-  const editorRef = useRef<Editor>(null)
+  const editorRef = useRef<any>(null)
 
   const handleEditorChange = () => {
     const markdown = editorRef.current?.getInstance().getMarkdown() || ''

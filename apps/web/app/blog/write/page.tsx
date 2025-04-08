@@ -5,16 +5,18 @@ import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { ArrowLeft } from 'lucide-react'
 import Toast from '../../../../web/components/ui/Toast'
-import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
+import colorSyntax from '@toast-ui/editor-plugin-color-syntax'
 
-import "../../../styles/tui-color-picker.css";
-import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
+import '../../../styles/tui-color-picker.css'
+import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css'
 
-const ToastEditor = dynamic(() => import('@toast-ui/react-editor').then(mod => mod.Editor), {
-  ssr: false,
-})
+// ✅ SSR-safe dynamic import
+const ToastEditor = dynamic(
+  () => import('@toast-ui/react-editor').then((mod) => mod.Editor),
+  { ssr: false }
+)
 
-export default function WritePage() {
+export default function Page() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [showToast, setShowToast] = useState(false)
@@ -65,7 +67,7 @@ export default function WritePage() {
 
         <ToastEditor
           ref={editorRef}
-          initialValue={"내용을 입력해주세요."}
+          initialValue="내용을 입력해주세요."
           previewStyle="vertical"
           height="400px"
           initialEditType="wysiwyg"

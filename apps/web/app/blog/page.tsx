@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, Trash2 } from 'lucide-react'
+import dynamic from 'next/dynamic'
 
 
 type BlogPost = {
@@ -10,6 +11,10 @@ type BlogPost = {
   title: string
   content: string
 }
+
+const ToastViewer = dynamic(() => import('@toast-ui/react-editor').then(mod => mod.Viewer), {
+  ssr: false,
+})
 
 export default function Page() {
   const [posts, setPosts] = useState<BlogPost[]>([])
@@ -107,16 +112,14 @@ export default function Page() {
                     e.stopPropagation()
                     handleDelete(post.id)
                   }}
-                  className="text-gray-400 hover:text-red-500"
+                  className="flex items-center gap-1 border border-gray-300 rounded-[4px] px-2 py-1 text-sm text-gray-600 hover:border-red-400 hover:text-red-500"
                 >
-                  <Trash2 size={16} />
+                  삭제 <Trash2 size={16} />
                 </button>
               </div>
-              {/*<div className="line-clamp-5 break-words text-sm text-gray-600 prose prose-sm max-w-none">*/}
-              {/*  <ReactMarkdown rehypePlugins={[rehypeRaw]}>*/}
-              {/*    {post.content}*/}
-              {/*  </ReactMarkdown>*/}
-              {/*</div>*/}
+              <div className="prose prose-sm max-w-none text-sm text-gray-600 max-h-[90px] overflow-hidden [&>*]:my-0">
+                <ToastViewer initialValue={post.content} />
+              </div>
             </li>
           ))}
         </ul>

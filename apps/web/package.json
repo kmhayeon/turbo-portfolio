@@ -15,13 +15,17 @@
     "@prisma/client": "^6.5.0",
     "@repo/ui": "workspace:*",
     "@toast-ui/editor": "^3.2.2",
+    "@toast-ui/editor-plugin-color-syntax": "^3.1.0",
     "@toast-ui/react-editor": "^3.2.3",
     "aos": "^2.3.4",
     "lucide-react": "^0.486.0",
     "next": "^15.2.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-markdown": "^10.1.0"
+    "react-markdown": "^10.1.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1",
+    "tui-color-picker": "^2.2.8"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

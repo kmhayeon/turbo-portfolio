@@ -6,6 +6,11 @@ import { ArrowLeft, X, Pencil } from 'lucide-react'
 import ReactMarkdown from 'react-markdown'
 import { Editor } from '@toast-ui/react-editor'
 import '@toast-ui/editor/dist/toastui-editor.css'
+import "../../../styles/tui-color-picker.css";
+import rehypeRaw from 'rehype-raw'
+import remarkGfm from 'remark-gfm'
+import colorSyntax from '@toast-ui/editor-plugin-color-syntax'
+import dynamic from 'next/dynamic'
 
 type BlogPost = {
   id: number
@@ -32,6 +37,10 @@ export default function BlogDetailPage(props: any) {
   const router = useRouter()
 
   const editorRef = useRef<Editor>(null)
+
+  const ToastEditor = dynamic(() => import('@toast-ui/react-editor').then(mod => mod.Editor), {
+    ssr: false,
+  })
 
   // 게시글 불러오기
   useEffect(() => {
@@ -112,15 +121,15 @@ export default function BlogDetailPage(props: any) {
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
           />
-
-          <Editor
+          <ToastEditor
             ref={editorRef}
             initialValue={editContent}
             previewStyle="vertical"
-            height="500px"
+            height="400px"
             initialEditType="wysiwyg"
             useCommandShortcut={true}
             hideModeSwitch={true}
+            plugins={[colorSyntax]}
           />
 
           <div className="flex justify-end gap-2 pt-2">
@@ -166,8 +175,14 @@ export default function BlogDetailPage(props: any) {
           </div>
 
           <article className="prose prose-sm max-w-none overflow-y-auto h-[500px] pr-2">
-            <ReactMarkdown>{post.content}</ReactMarkdown>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
+            >
+              {post.content}
+            </ReactMarkdown>
           </article>
+
         </div>
       )}
 

@@ -6,6 +6,10 @@ import dynamic from 'next/dynamic'
 import { Editor } from '@toast-ui/react-editor'
 import { ArrowLeft } from 'lucide-react'
 import Toast from '../../../../web/components/ui/Toast'
+import colorSyntax from '@toast-ui/editor-plugin-color-syntax';
+
+import "../../../styles/tui-color-picker.css";
+import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
 
 const ToastEditor = dynamic(() => import('@toast-ui/react-editor').then(mod => mod.Editor), {
   ssr: false,
@@ -69,6 +73,7 @@ export default function WritePage() {
           useCommandShortcut={true}
           hideModeSwitch={true}
           onChange={handleEditorChange}
+          plugins={[colorSyntax]}
         />
 
         <div className="mt-4 flex justify-end gap-2">

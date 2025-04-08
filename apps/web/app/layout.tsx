@@ -2,6 +2,7 @@ import React from 'react'
 import './globals.css'
 import 'aos/dist/aos.css'
 import '@toast-ui/editor/dist/toastui-editor.css'
+import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
 
 export const metadata = {
   title: 'HAYEON',

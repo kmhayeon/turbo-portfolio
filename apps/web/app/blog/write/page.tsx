@@ -1,25 +1,23 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { ArrowLeft } from 'lucide-react'
 import Toast from '../../../../web/components/ui/Toast'
-import colorSyntax from '@toast-ui/editor-plugin-color-syntax'
 
-import '../../../styles/tui-color-picker.css'
-import '@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css'
+import "../../../styles/tui-color-picker.css";
+import "@toast-ui/editor-plugin-color-syntax/dist/toastui-editor-plugin-color-syntax.css";
 
-// ✅ SSR-safe dynamic import
-const ToastEditor = dynamic(
-  () => import('@toast-ui/react-editor').then((mod) => mod.Editor),
-  { ssr: false }
-)
+const ToastEditor = dynamic(() => import('@toast-ui/react-editor').then(mod => mod.Editor), {
+  ssr: false,
+})
 
-export default function Page() {
+export default function WritePage() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [showToast, setShowToast] = useState(false)
+  const [colorSyntaxPlugin, setColorSyntaxPlugin] = useState<any>(null)
 
   const router = useRouter()
   const editorRef = useRef<any>(null)
@@ -45,6 +43,12 @@ export default function Page() {
     }, 1500)
   }
 
+  useEffect(() => {
+    import('@toast-ui/editor-plugin-color-syntax').then((mod) => {
+      setColorSyntaxPlugin(() => mod.default)
+    })
+  }, [])
+
   return (
     <section className="mx-auto w-full max-w-6xl border-t px-4 py-12 sm:px-6 md:px-8 lg:px-12">
       <div className="mb-6 flex items-center gap-2">
@@ -65,17 +69,19 @@ export default function Page() {
           onChange={(e) => setTitle(e.target.value)}
         />
 
-        <ToastEditor
-          ref={editorRef}
-          initialValue="내용을 입력해주세요."
-          previewStyle="vertical"
-          height="400px"
-          initialEditType="wysiwyg"
-          useCommandShortcut={true}
-          hideModeSwitch={true}
-          onChange={handleEditorChange}
-          plugins={[colorSyntax]}
-        />
+        {colorSyntaxPlugin && (
+          <ToastEditor
+            ref={editorRef}
+            initialValue="내용을 입력해주세요."
+            previewStyle="vertical"
+            height="400px"
+            initialEditType="wysiwyg"
+            useCommandShortcut={true}
+            hideModeSwitch={true}
+            onChange={handleEditorChange}
+            plugins={[colorSyntaxPlugin]}
+          />
+        )}
 
         <div className="mt-4 flex justify-end gap-2">
           <button

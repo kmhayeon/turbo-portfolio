@@ -8,7 +8,6 @@ import '@toast-ui/editor/dist/toastui-editor.css'
 import "../../../styles/tui-color-picker.css";
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
-import colorSyntax from '@toast-ui/editor-plugin-color-syntax'
 import dynamic from 'next/dynamic'
 
 type BlogPost = {
@@ -39,6 +38,7 @@ export default function BlogDetailPage(props: any) {
   const [toastMsg, setToastMsg] = useState('')
   const router = useRouter()
   const editorRef = useRef<any>(null)
+  const [colorSyntaxPlugin, setColorSyntaxPlugin] = useState<any>(null)
 
 
   // 게시글 불러오기
@@ -58,6 +58,12 @@ export default function BlogDetailPage(props: any) {
       .then((res) => res.json())
       .then((data) => setComments(data))
   }, [id])
+
+  useEffect(() => {
+    import('@toast-ui/editor-plugin-color-syntax').then((mod) => {
+      setColorSyntaxPlugin(() => mod.default)
+    })
+  }, [])
 
   const handleEdit = () => {
     setIsEditing(true)
@@ -120,16 +126,18 @@ export default function BlogDetailPage(props: any) {
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
           />
-          <ToastEditor
-            ref={editorRef}
-            initialValue={editContent}
-            previewStyle="vertical"
-            height="400px"
-            initialEditType="wysiwyg"
-            useCommandShortcut={true}
-            hideModeSwitch={true}
-            plugins={[colorSyntax]}
-          />
+          {colorSyntaxPlugin && (
+            <ToastEditor
+              ref={editorRef}
+              initialValue={editContent}
+              previewStyle="vertical"
+              height="400px"
+              initialEditType="wysiwyg"
+              useCommandShortcut={true}
+              hideModeSwitch={true}
+              plugins={[colorSyntaxPlugin]}
+            />
+          )}
 
           <div className="flex justify-end gap-2 pt-2">
             <button

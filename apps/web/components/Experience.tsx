@@ -19,35 +19,13 @@ export default function Experience() {
       period: '2023.08 ~ 재직중',
       projects: [
         {
-          title: '한화 Ocean Draft Reading System',
-          env: 'Typescript / React / Next.js / Styled Components',
-          desc: ['웹소켓 기반 실시간 데이터 처리', '배의 흘수선 실시간 측정 페이지 개발'],
-        },
-        {
-          title: 'Vivity Analystics',
-          env: 'Typescript / React / Next.js / Styled Components / Tanstack Query',
+          title: '중공업 최적화 AI 플랫폼 개발',
+          env: 'Typescript / Next.js / Tailwind CSS / Tanstack Query / Zustand',
           desc: [
-            '외부 중공업 데이터를 차트로 시각화하는 대시보드 시스템 개발',
-            'JWT 토큰 기반 로그인 기능 및 유저 역할 관리',
-            '데이터 시각화를 통한 사용자 경험 개선',
-          ],
-        },
-        {
-          title: '한화 Ocean Drone',
-          env: 'Typescript / React / Next.js / Styled Components / Tanstack Query / Zustand',
-          desc: [
-            '드론이 촬영한 날짜별 중공업 현황 대시보드 개발',
-            '오전/오후별 블록 정보 확인 및 캐드 이미지 수정 기능 개발',
-            'yard 이미지의 좌표값 매칭 및 시각화',
-          ],
-        },
-        {
-          title: 'Total Hyper Compressor / EVA Vibrating Screen',
-          env: 'Typescript / React / Next.js / Styled Components',
-          desc: [
-            'Hyper Compressor 및 EVA Vibrating Screen 시스템 개발',
-            'React Slick 버그 수정 및 스와이프 기능 개발',
-            '실린더 에러 확인 페이지 개발',
+            '모노레포 기반 프로젝트 관리 및 서브모듈 구조 설계',
+            '중공업 데이터 시각화 및 Analytics 대시보드 개발',
+            'Hyper Compressor / EVA Vibrating Screen 시스템 개발',
+            '드론 기반 Yard 현황 관리 시스템 개발',
           ],
         },
       ],
@@ -60,7 +38,7 @@ export default function Experience() {
           title: '메디팡팡 앱 개발',
           env: 'Typescript / React Native / GraphQL',
           desc: [
-            '메디팡팡 앱 아이디어툴 과제 수행 및 관련 서비스 개발',
+            '메디팡팡 앱 마이데이터 과제 수행 및 관련 서비스 개발',
             '앱 유저수 10,000명+ 증가',
           ],
         },
@@ -68,7 +46,7 @@ export default function Experience() {
           title: '메디팡팡 웹 개발',
           env: 'Typescript / React / GraphQL',
           desc: [
-            '메디팡팡 웹 원무진 기능 개발/운영/배포',
+            '메디팡팡 웹 사용자 기능 개발/운영/배포',
             '메디팡팡 병원 웹 기능 개발/운영/배포',
             '메디팡팡 의사 웹 추가기능, 회원가입 개발/운영/배포',
             '메디팡팡 약사 웹 기능, 회원가입 개발/운영/배포',

@@ -64,14 +64,14 @@ export default function Experience() {
           desc: ['자사 홈페이지 UI 수정 및 기능 개선'],
         },
         {
-          title: '정산 어드민 기능 개발',
+          title: '정산 플랫폼 개발',
           env: 'Javascript / React / Styled Components',
-          desc: ['정산 어드민 기능 개발'],
+          desc: ['정산 플랫폼 기능 개발'],
         },
         {
-          title: '옐로우버스 어드민 1.0 개발 및 유지보수',
+          title: '옐로우버스 1.0 개발 및 유지보수',
           env: 'Javascript / React / Styled Components',
-          desc: ['자사 서비스 어드민 1.0 ver 기능 추가 개발 및 유지보수'],
+          desc: ['자사 서비스 1.0 ver 기능 추가 개발 및 유지보수'],
         },
       ],
     },

@@ -31,7 +31,7 @@ const portfolioItems = [
   },
   {
     alt: 'VivityAI',
-    description: '제조업의 생산 공정을 시각화하고<br />분석하는 AI 기반 솔루션입니다.',
+    description: '중공업의 공정을 시각화하고<br />분석하는 AI 기반 솔루션입니다.',
     images: [
       '/04.png',
       '/04-1.png',

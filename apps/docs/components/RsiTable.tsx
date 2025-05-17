@@ -2,15 +2,20 @@
 
 import { useEffect, useState } from 'react'
 import { Info } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Card, CardContent } from '@repo/ui'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../../../packages/ui/src/tooltip'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
+} from '../../../packages/ui/src/select'
 import {
   Table,
   TableBody,
@@ -18,7 +23,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
+} from '../../../packages/ui/src/table'
 import { calculateRSI } from '../lib/rsi'
 import { fetch24hVolume, fetchKlines, fetchTopVolumeSymbols, fetchVolume } from '../lib/binance'
 import { formatKoreanUnit } from '../lib/format'

@@ -2,10 +2,10 @@
 export default {
   darkMode: ['class'],
   content: [
-    './apps/docs/app/**/*.{ts,tsx}',
-    './apps/docs/components/**/*.{ts,tsx}',
-    './apps/docs/lib/**/*.{ts,tsx}',
-    './packages/ui/src/**/*.{ts,tsx}',
+    './app/**/*.{js,ts,jsx,tsx}',
+    './components/**/*.{js,ts,jsx,tsx}',
+    './lib/**/*.{ts,tsx}',
+    '../../packages/ui/src/**/*.{ts,tsx}',
   ],
   safelist: [
     'text-red-500',
@@ -15,9 +15,16 @@ export default {
     'cursor-pointer',
     'bg-muted',
     'hover:bg-muted/50',
+    'dark:bg-card',
+    'dark:text-muted-foreground',
+    'dark:text-white',
+    'dark:bg-muted',
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['NanumSquareRound', 'sans-serif'],
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

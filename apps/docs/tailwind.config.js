@@ -5,7 +5,7 @@ export default {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './lib/**/*.{ts,tsx}',
-    '../../packages/ui/**/*.{ts,tsx}',
+    './components/ui/**/*.{ts,tsx}',
   ],
   theme: {
     extend: {

@@ -1,11 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ['class'],
+  // content: ['./components/**/*.{ts,tsx}', './app/**/*.{ts,tsx}', './lib/**/*.{ts,tsx}'],
   content: [
-    './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
-    './lib/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
     './components/ui/**/*.{ts,tsx}',
+    './lib/**/*.{ts,tsx}',
   ],
   theme: {
     extend: {

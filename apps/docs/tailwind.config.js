@@ -2,10 +2,10 @@
 export default {
   darkMode: ['class'],
   content: [
-    './app/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './components/ui/**/*.{ts,tsx}',
-    './lib/**/*.{ts,tsx}',
+    './apps/docs/app/**/*.{ts,tsx}',
+    './apps/docs/components/**/*.{ts,tsx}',
+    './apps/docs/lib/**/*.{ts,tsx}',
+    './packages/ui/src/**/*.{ts,tsx}',
   ],
   safelist: [
     'text-red-500',

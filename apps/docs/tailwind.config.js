@@ -1,12 +1,20 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ['class'],
-  // content: ['./components/**/*.{ts,tsx}', './app/**/*.{ts,tsx}', './lib/**/*.{ts,tsx}'],
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './components/ui/**/*.{ts,tsx}',
     './lib/**/*.{ts,tsx}',
+  ],
+  safelist: [
+    'text-red-500',
+    'text-green-500',
+    'text-muted-foreground',
+    'hover:text-white',
+    'cursor-pointer',
+    'bg-muted',
+    'hover:bg-muted/50',
   ],
   theme: {
     extend: {

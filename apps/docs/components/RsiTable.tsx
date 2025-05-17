@@ -87,6 +87,7 @@ export default function RsiTable() {
                     src={`https://cryptoicon-api.pages.dev/api/icon/${row.symbol.replace('USDT', '').toLowerCase()}`}
                     alt={row.symbol}
                     className="h-5 w-5 rounded-full"
+                    style={{ width: '30px', height: '30px' }}
                     onError={(e) => (e.currentTarget.style.display = 'none')}
                   />
                   {row.symbol.replace('USDT', '')}

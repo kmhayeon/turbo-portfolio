@@ -24,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from '../../../packages/ui/src/table'
-import { calculateRSI } from '../lib/rsi'
+import { calculateWilderRSI } from '../lib/rsi'
 import { fetch24hVolume, fetchKlines, fetchTopVolumeSymbols, fetchVolume } from '../lib/binance'
 import { formatKoreanUnit } from '../lib/format'
 
@@ -58,14 +58,13 @@ export default function Dashboard() {
           try {
             const closes = await fetchKlines(symbol, interval)
 
-            // ✅ 첫 번째 코인일 때만 로그 찍기
-            if (index === 0) {
-              console.log(`📊 ${symbol} (${interval}) closes:`, closes.slice(0, 20)) // 앞 20개만 보기 좋게
-            }
+            // if (index === 0) {
+            //   console.log(`📊 ${symbol} (${interval}) closes:`, closes.slice(0, 20))
+            // }
 
             const volume = await fetchVolume(symbol, interval)
             const volume24h = await fetch24hVolume(symbol)
-            const rsi = calculateRSI(closes)
+            const rsi = calculateWilderRSI(closes)
 
             return { symbol, rsi, volume, volume24h }
           } catch (err) {
@@ -93,7 +92,7 @@ export default function Dashboard() {
 
     const intervalId: number = window.setInterval(() => {
       loadData()
-    }, 300000)
+    }, REFRESH_INTERVAL_MS)
 
     const countdownId: number = window.setInterval(() => {
       setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
@@ -130,7 +129,6 @@ export default function Dashboard() {
     <div className="p-6">
       <TooltipProvider>
         <div className="mb-4 flex items-center justify-between">
-          {/*<h1 className="text-2xl font-bold">Binance RSI & Volume Dashboard</h1>*/}
           <div className="flex items-center gap-4">
             <Select value={interval} onValueChange={setInterval}>
               <SelectTrigger className="w-[120px]">

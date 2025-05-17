@@ -1,5 +1,6 @@
 import React from 'react'
 import './globals.css'
+import { Header } from '@/components/Header'
 
 export const metadata = {
   title: 'RSI',
@@ -11,7 +12,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body>{children}</body>
     </html>
   )

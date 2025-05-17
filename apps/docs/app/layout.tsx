@@ -3,8 +3,8 @@ import './globals.css'
 import { Header } from '@/components/Header'
 
 export const metadata = {
-  title: 'RSI',
-  description: 'RSI',
+  title: 'Binance Futures',
+  description: 'Binance Futures',
   icons: {
     icon: '/favicon.ico',
   },

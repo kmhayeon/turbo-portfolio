@@ -1,6 +1,26 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { ChevronsUpDown } from 'lucide-react'
+
+const RSI_INTERVALS = ['5m', '15m', '1h', '4h', '12h', '1d']
+const INTERVAL_LABELS: Record<string, string> = {
+  '5m': '5분',
+  '15m': '15분',
+  '1h': '1시간',
+  '4h': '4시간',
+  '12h': '12시간',
+  '1d': '24시간',
+}
 
 type RsiData = {
   symbol: string
@@ -8,10 +28,10 @@ type RsiData = {
   change1h: number
   change24h: number
   volume: number
-  [key: string]: number | string
+  volume_5m?: number
+  volume_1h?: number
+  [key: string]: number | string | undefined
 }
-
-const RSI_INTERVALS = ['5m', '15m', '1h', '4h', '12h', '1d']
 
 export default function RsiTable() {
   const [data, setData] = useState<RsiData[]>([])
@@ -30,7 +50,7 @@ export default function RsiTable() {
 
   useEffect(() => {
     fetchData()
-    const interval = setInterval(() => fetchData(), 300_000) // ✅ 5분마다
+    const interval = setInterval(() => fetchData(), 300_000)
     return () => clearInterval(interval)
   }, [page, sortOrder])
 
@@ -42,72 +62,59 @@ export default function RsiTable() {
   }, [])
 
   return (
-    <div className="p-4">
-      <div className="mb-2 flex items-center justify-between">
-        <span className="text-sm text-gray-500">
+    <div className="p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <span className="text-muted-foreground text-sm">
+          {`${String(Math.floor(timer / 60)).padStart(2, '0')}분 ${String(timer % 60).padStart(2, '0')}초 후 갱신`}
+        </span>
+        <span className="text-muted-foreground text-sm">
           마지막 갱신:{' '}
           {lastUpdated
             ? new Date(lastUpdated).toLocaleTimeString('ko-KR', { hour12: false })
             : '로딩 중...'}
         </span>
-
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-500">
-            {`다음 갱신까지 ${String(Math.floor(timer / 60)).padStart(2, '0')}:${String(timer % 60).padStart(2, '0')}`}
-          </span>
-        </div>
       </div>
 
-      <div className="overflow-auto">
-        <table className="min-w-full border border-gray-200 text-sm">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 text-left">기호</th>
-              {/*<th className="p-2 text-right">가격</th>*/}
-              {/*<th className="p-2 text-right">1시간%</th>*/}
-              {/*<th className="p-2 text-right">24시간%</th>*/}
-              <th
-                className="cursor-pointer p-2 text-right"
+      <div className="bg-card text-card-foreground rounded-md border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="text-left">Symbol</TableHead>
+              <TableHead
+                className="cursor-pointer select-none text-right"
                 onClick={() => setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
               >
-                거래량 {sortOrder === 'asc' ? '🔼' : '🔽'}
-              </th>
-              <th className="p-2 text-right">거래량(5m)</th>
-              <th className="p-2 text-right">거래량(1h)</th>
+                <span className="inline-flex items-center gap-1">
+                  거래량
+                  <ChevronsUpDown className="text-muted-foreground h-4 w-4" />
+                </span>
+              </TableHead>
+              <TableHead className="text-right">거래량(5분)</TableHead>
+              <TableHead className="text-right">거래량(1시간)</TableHead>
               {RSI_INTERVALS.map((int) => (
-                <th key={int} className="p-2 text-right">{`RSI(${int})`}</th>
+                <TableHead key={int} className="text-right">
+                  RSI({INTERVAL_LABELS[int]})
+                </TableHead>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {data.map((row) => (
-              <tr key={row.symbol} className="border-t border-gray-100">
-                <td className="flex items-center gap-2 p-2 font-medium">
+              <TableRow key={row.symbol}>
+                <TableCell className="flex items-center gap-2 font-medium">
                   <img
                     src={`https://cryptoicon-api.pages.dev/api/icon/${row.symbol.replace('USDT', '').toLowerCase()}`}
                     alt={row.symbol}
                     className="h-5 w-5 rounded-full"
-                    style={{ width: '30px', height: '30px' }}
                     onError={(e) => (e.currentTarget.style.display = 'none')}
                   />
                   {row.symbol.replace('USDT', '')}
-                </td>
-                {/*<td className="p-2 text-right">${row.price.toFixed(4)}</td>*/}
-                {/*<td*/}
-                {/*  className={`p-2 text-right ${row.change1h >= 0 ? 'text-green-600' : 'text-red-500'}`}*/}
-                {/*>*/}
-                {/*  {row.change1h.toFixed(2)}%*/}
-                {/*</td>*/}
-                {/*<td*/}
-                {/*  className={`p-2 text-right ${row.change24h >= 0 ? 'text-green-600' : 'text-red-500'}`}*/}
-                {/*>*/}
-                {/*  {row.change24h.toFixed(2)}%*/}
-                {/*</td>*/}
-                <td className="p-2 text-right">
+                </TableCell>
+                <TableCell className="text-right">
                   {row.volume.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                </td>
-                <td className="p-2 text-right">{row.volume_5m?.toLocaleString()}</td>
-                <td className="p-2 text-right">{row.volume_1h?.toLocaleString()}</td>
+                </TableCell>
+                <TableCell className="text-right">{row.volume_5m?.toLocaleString()}</TableCell>
+                <TableCell className="text-right">{row.volume_1h?.toLocaleString()}</TableCell>
                 {RSI_INTERVALS.map((int) => {
                   const value = row[`rsi_${int}`]
                   const color =
@@ -116,32 +123,32 @@ export default function RsiTable() {
                       : value >= 70
                         ? 'text-red-500'
                         : value <= 30
-                          ? 'text-blue-500'
+                          ? 'text-primary'
                           : ''
                   return (
-                    <td key={int} className={`p-2 text-right ${color}`}>
-                      {value !== null && typeof value === 'number' ? value.toFixed(2) : '-'}
-                    </td>
+                    <TableCell key={int} className={`text-right ${color}`}>
+                      {typeof value === 'number' ? value.toFixed(2) : '-'}
+                    </TableCell>
                   )
                 })}
-              </tr>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
-      <div className="mt-4 flex justify-between">
-        <button
+      <div className="mt-6 flex justify-between">
+        <Button
+          variant="outline"
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page === 1}
-          className="rounded border px-4 py-1 disabled:opacity-50"
         >
           이전
-        </button>
-        <span>Page {page}</span>
-        <button onClick={() => setPage((p) => p + 1)} className="rounded border px-4 py-1">
+        </Button>
+        <span className="text-sm">Page {page}</span>
+        <Button variant="outline" onClick={() => setPage((p) => p + 1)}>
           다음
-        </button>
+        </Button>
       </div>
     </div>
   )

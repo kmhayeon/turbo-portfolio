@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useState } from 'react'
 import { Info } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'

@@ -1,4 +1,3 @@
-// apps/rsi-app/components/CoinSelector.tsx
 'use client'
 
 import { useEffect, useState } from 'react'

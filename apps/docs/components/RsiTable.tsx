@@ -54,12 +54,19 @@ export default function Dashboard() {
     try {
       const symbols = await fetchTopVolumeSymbols(50)
       const results = await Promise.all(
-        symbols.map(async (symbol) => {
+        symbols.map(async (symbol, index) => {
           try {
             const closes = await fetchKlines(symbol, interval)
+
+            // ✅ 첫 번째 코인일 때만 로그 찍기
+            if (index === 0) {
+              console.log(`📊 ${symbol} (${interval}) closes:`, closes.slice(0, 20)) // 앞 20개만 보기 좋게
+            }
+
             const volume = await fetchVolume(symbol, interval)
             const volume24h = await fetch24hVolume(symbol)
             const rsi = calculateRSI(closes)
+
             return { symbol, rsi, volume, volume24h }
           } catch (err) {
             console.error(`Failed to fetch ${symbol}`, err)
@@ -67,6 +74,7 @@ export default function Dashboard() {
           }
         }),
       )
+
       const filtered = results.filter(
         (r): r is { symbol: string; rsi: number; volume: number; volume24h: number } => r !== null,
       )
@@ -213,7 +221,7 @@ export default function Dashboard() {
                       <TableCell
                         className={`text-right ${coin.rsi >= 70 ? 'text-red-500' : coin.rsi <= 30 ? 'text-green-500' : ''}`}
                       >
-                        {coin.rsi.toFixed(1)}
+                        {coin.rsi.toFixed(2)}
                       </TableCell>
                       <TableCell className="text-right">{formatKoreanUnit(coin.volume)}</TableCell>
                       <TableCell className="text-right">

@@ -17,9 +17,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { formatKoreanUnit } from '../lib/format'
-import { fetch24hVolume, fetchKlines, fetchTopVolumeSymbols, fetchVolume } from '../lib/binance'
 import { calculateRSI } from '../lib/rsi'
+import { fetch24hVolume, fetchKlines, fetchTopVolumeSymbols, fetchVolume } from '../lib/binance'
+import { formatKoreanUnit } from '../lib/format'
 
 const intervals = ['5m', '15m', '1h', '4h', '1d']
 const intervalLabels: Record<string, string> = {

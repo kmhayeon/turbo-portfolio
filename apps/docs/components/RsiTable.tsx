@@ -28,12 +28,13 @@ import { calculateWilderRSI } from '../lib/rsi'
 import { fetch24hVolume, fetchKlines, fetchTopVolumeSymbols, fetchVolume } from '../lib/binance'
 import { formatKoreanUnit } from '../lib/format'
 
-const intervals = ['5m', '15m', '1h', '4h', '1d']
+const intervals = ['5m', '15m', '1h', '4h', '12h', '1d']
 const intervalLabels: Record<string, string> = {
   '5m': '5분봉',
   '15m': '15분봉',
   '1h': '1시간봉',
   '4h': '4시간봉',
+  '12h': '12시간봉',
   '1d': '24시간봉',
 }
 const REFRESH_INTERVAL_MS = 300_000

@@ -17,7 +17,7 @@ export default function RsiTable() {
   const [data, setData] = useState<RsiData[]>([])
   const [page, setPage] = useState(1)
   const [lastUpdated, setLastUpdated] = useState<string>('')
-  const [timer, setTimer] = useState<number>(60)
+  const [timer, setTimer] = useState<number>(300)
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
   const fetchData = async () => {
@@ -25,14 +25,14 @@ export default function RsiTable() {
     const json = await res.json()
     setData(json.data)
     setLastUpdated(json.updatedAt)
-    setTimer(60)
+    setTimer(300)
   }
 
   useEffect(() => {
     fetchData()
-    const interval = setInterval(() => fetchData(), 60_000)
+    const interval = setInterval(() => fetchData(), 300_000) // ✅ 5분마다
     return () => clearInterval(interval)
-  }, [page, sortOrder]) // ✅ sortOrder도 의존성에 포함
+  }, [page, sortOrder])
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -52,12 +52,6 @@ export default function RsiTable() {
         </span>
 
         <div className="flex items-center gap-4">
-          {/*<button*/}
-          {/*  onClick={() => setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))}*/}
-          {/*  className="text-sm text-blue-600 underline"*/}
-          {/*>*/}
-          {/*  거래량 {sortOrder === 'asc' ? '🔼' : '🔽'}*/}
-          {/*</button>*/}
           <span className="text-sm text-gray-500">
             {`다음 갱신까지 ${String(Math.floor(timer / 60)).padStart(2, '0')}:${String(timer % 60).padStart(2, '0')}`}
           </span>
@@ -86,7 +80,16 @@ export default function RsiTable() {
           <tbody>
             {data.map((row) => (
               <tr key={row.symbol} className="border-t border-gray-100">
-                <td className="p-2 font-medium">{row.symbol}</td>
+                {/*<td className="p-2 font-medium">{row.symbol}</td>*/}
+                <td className="flex items-center gap-2 p-2 font-medium">
+                  <img
+                    src={`https://cryptoicon-api.pages.dev/api/icon/${row.symbol.replace('USDT', '').toLowerCase()}`}
+                    alt={row.symbol}
+                    className="h-5 w-5 rounded-full"
+                    onError={(e) => (e.currentTarget.style.display = 'none')}
+                  />
+                  {row.symbol}
+                </td>
                 <td className="p-2 text-right">${row.price.toFixed(4)}</td>
                 <td
                   className={`p-2 text-right ${row.change1h >= 0 ? 'text-green-600' : 'text-red-500'}`}

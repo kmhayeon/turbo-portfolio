@@ -1,6 +1,14 @@
-'use client'
-
 import { useEffect, useState } from 'react'
+import { Info } from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Table,
   TableBody,
@@ -9,147 +17,209 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { ChevronsUpDown } from 'lucide-react'
+import { formatKoreanUnit } from '../lib/format'
+import { fetch24hVolume, fetchKlines, fetchTopVolumeSymbols, fetchVolume } from '../lib/binance'
+import { calculateRSI } from '../lib/rsi'
 
-const RSI_INTERVALS = ['5m', '15m', '1h', '4h', '12h', '1d']
-const INTERVAL_LABELS: Record<string, string> = {
-  '5m': '5분',
-  '15m': '15분',
-  '1h': '1시간',
-  '4h': '4시간',
-  '12h': '12시간',
-  '1d': '24시간',
+const intervals = ['5m', '15m', '1h', '4h', '1d']
+const intervalLabels: Record<string, string> = {
+  '5m': '5분봉',
+  '15m': '15분봉',
+  '1h': '1시간봉',
+  '4h': '4시간봉',
+  '1d': '24시간봉',
 }
+const REFRESH_INTERVAL_MS = 300_000
 
-type RsiData = {
-  symbol: string
-  price: number
-  change1h: number
-  change24h: number
-  volume: number
-  volume_5m?: number
-  volume_1h?: number
-  [key: string]: number | string | undefined
-}
-
-export default function RsiTable() {
-  const [data, setData] = useState<RsiData[]>([])
-  const [page, setPage] = useState(1)
-  const [lastUpdated, setLastUpdated] = useState<string>('')
-  const [timer, setTimer] = useState<number>(300)
+export default function Dashboard() {
+  const [interval, setInterval] = useState('5m')
+  const [data, setData] = useState<
+    { symbol: string; rsi: number; volume: number; volume24h: number }[]
+  >([])
+  const [loading, setLoading] = useState(false)
+  const [sortBy, setSortBy] = useState<'rsi' | 'volume'>('volume')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [countdown, setCountdown] = useState<number>(REFRESH_INTERVAL_MS / 1000)
 
-  const fetchData = async () => {
-    const res = await fetch(`/api/rsi-table?page=${page}&sort=volume&order=${sortOrder}`)
-    const json = await res.json()
-    setData(json.data)
-    setLastUpdated(json.updatedAt)
-    setTimer(300)
+  const loadData = async () => {
+    setLoading(true)
+    try {
+      const symbols = await fetchTopVolumeSymbols(50)
+      const results = await Promise.all(
+        symbols.map(async (symbol) => {
+          try {
+            const closes = await fetchKlines(symbol, interval)
+            const volume = await fetchVolume(symbol, interval)
+            const volume24h = await fetch24hVolume(symbol)
+            const rsi = calculateRSI(closes)
+            return { symbol, rsi, volume, volume24h }
+          } catch (err) {
+            console.error(`Failed to fetch ${symbol}`, err)
+            return null
+          }
+        }),
+      )
+      const filtered = results.filter(
+        (r): r is { symbol: string; rsi: number; volume: number; volume24h: number } => r !== null,
+      )
+      setData(filtered)
+      setLastUpdated(new Date())
+      setCountdown(REFRESH_INTERVAL_MS / 1000)
+    } catch (err) {
+      console.error('Failed to load data', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   useEffect(() => {
-    fetchData()
-    const interval = setInterval(() => fetchData(), 300_000)
-    return () => clearInterval(interval)
-  }, [page, sortOrder])
+    loadData()
 
-  useEffect(() => {
-    const countdown = setInterval(() => {
-      setTimer((prev) => (prev > 0 ? prev - 1 : 0))
+    const intervalId: number = window.setInterval(() => {
+      loadData()
+    }, 300000)
+
+    const countdownId: number = window.setInterval(() => {
+      setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
     }, 1000)
-    return () => clearInterval(countdown)
-  }, [])
+
+    return () => {
+      clearInterval(intervalId)
+      clearInterval(countdownId)
+    }
+  }, [interval])
+
+  const sortedData = [...data].sort((a, b) => {
+    const key = sortBy
+    if (sortOrder === 'asc') return a[key] - b[key]
+    return b[key] - a[key]
+  })
+
+  const toggleSort = (key: 'rsi' | 'volume') => {
+    if (sortBy === key) {
+      setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSortBy(key)
+      setSortOrder('desc')
+    }
+  }
+
+  const getCoinName = (symbol: string) => symbol.replace('USDT', '')
+  const getCoinLogo = (symbol: string) => {
+    const name = getCoinName(symbol).toLowerCase()
+    return `https://cryptoicon-api.pages.dev/api/icon/${name}`
+  }
 
   return (
     <div className="p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <span className="text-muted-foreground text-sm">
-          {`${String(Math.floor(timer / 60)).padStart(2, '0')}분 ${String(timer % 60).padStart(2, '0')}초 후 갱신`}
-        </span>
-        <span className="text-muted-foreground text-sm">
-          마지막 갱신:{' '}
-          {lastUpdated
-            ? new Date(lastUpdated).toLocaleTimeString('ko-KR', { hour12: false })
-            : '로딩 중...'}
-        </span>
-      </div>
+      <TooltipProvider>
+        <div className="mb-4 flex items-center justify-between">
+          {/*<h1 className="text-2xl font-bold">Binance RSI & Volume Dashboard</h1>*/}
+          <div className="flex items-center gap-4">
+            <Select value={interval} onValueChange={setInterval}>
+              <SelectTrigger className="w-[120px]">
+                <SelectValue placeholder="봉 간격" defaultValue={interval}>
+                  {intervalLabels[interval]}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {intervals.map((item) => (
+                  <SelectItem key={item} value={item}>
+                    {intervalLabels[item]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {lastUpdated && (
+              <span className="text-muted-foreground text-sm">
+                {Math.floor(countdown / 60)}분 {countdown % 60}초 후 갱신
+              </span>
+            )}
+          </div>
+          {lastUpdated && (
+            <span className="text-muted-foreground text-sm">
+              업데이트: {lastUpdated.toLocaleTimeString()}
+            </span>
+          )}
+        </div>
 
-      <div className="bg-card text-card-foreground rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-left">Symbol</TableHead>
-              <TableHead
-                className="cursor-pointer select-none text-right"
-                onClick={() => setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
-              >
-                <span className="inline-flex items-center gap-1">
-                  거래량
-                  <ChevronsUpDown className="text-muted-foreground h-4 w-4" />
-                </span>
-              </TableHead>
-              <TableHead className="text-right">거래량(5분)</TableHead>
-              <TableHead className="text-right">거래량(1시간)</TableHead>
-              {RSI_INTERVALS.map((int) => (
-                <TableHead key={int} className="text-right">
-                  RSI({INTERVAL_LABELS[int]})
-                </TableHead>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((row) => (
-              <TableRow key={row.symbol}>
-                <TableCell className="flex items-center gap-2 font-medium">
-                  <img
-                    src={`https://cryptoicon-api.pages.dev/api/icon/${row.symbol.replace('USDT', '').toLowerCase()}`}
-                    alt={row.symbol}
-                    className="h-5 w-5 rounded-full"
-                    onError={(e) => (e.currentTarget.style.display = 'none')}
-                  />
-                  {row.symbol.replace('USDT', '')}
-                </TableCell>
-                <TableCell className="text-right">
-                  {row.volume.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                </TableCell>
-                <TableCell className="text-right">{row.volume_5m?.toLocaleString()}</TableCell>
-                <TableCell className="text-right">{row.volume_1h?.toLocaleString()}</TableCell>
-                {RSI_INTERVALS.map((int) => {
-                  const value = row[`rsi_${int}`]
-                  const color =
-                    typeof value !== 'number'
-                      ? ''
-                      : value >= 70
-                        ? 'text-red-500'
-                        : value <= 30
-                          ? 'text-primary'
-                          : ''
-                  return (
-                    <TableCell key={int} className={`text-right ${color}`}>
-                      {typeof value === 'number' ? value.toFixed(2) : '-'}
+        <Card>
+          <CardContent className="p-0">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>코인</TableHead>
+                  <TableHead
+                    className="cursor-pointer text-right hover:text-white"
+                    onClick={() => toggleSort('rsi')}
+                  >
+                    RSI {sortBy === 'rsi' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
+                  </TableHead>
+                  <TableHead
+                    className="cursor-pointer text-right hover:text-white"
+                    onClick={() => toggleSort('volume')}
+                  >
+                    거래량 {sortBy === 'volume' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
+                  </TableHead>
+                  <TableHead className="text-right">
+                    <div className="flex items-center justify-end gap-1">
+                      거래량(24H)
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="text-muted-foreground h-4 w-4 cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <div className="text-left text-sm">
+                            - 24시간봉 거래량: 오늘 자정부터 누적된 값입니다. (실시간 증가)
+                            <br />- 24H 거래량: 현재 시점 기준 최근 24시간 동안의 거래량입니다.
+                            (선택된 봉 간격과는 무관)
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={3} className="p-4 text-center">
+                      Loading...
                     </TableCell>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-
-      <div className="mt-6 flex justify-between">
-        <Button
-          variant="outline"
-          onClick={() => setPage((p) => Math.max(1, p - 1))}
-          disabled={page === 1}
-        >
-          이전
-        </Button>
-        <span className="text-sm">Page {page}</span>
-        <Button variant="outline" onClick={() => setPage((p) => p + 1)}>
-          다음
-        </Button>
-      </div>
+                  </TableRow>
+                ) : (
+                  sortedData.map((coin) => (
+                    <TableRow key={coin.symbol}>
+                      <TableCell className="flex items-center gap-2">
+                        <img
+                          src={getCoinLogo(coin.symbol)}
+                          alt={coin.symbol}
+                          width={20}
+                          height={20}
+                          onError={(e) => {
+                            e.currentTarget.src = '/fallback-icon.png'
+                          }}
+                        />
+                        {getCoinName(coin.symbol)}
+                      </TableCell>
+                      <TableCell
+                        className={`text-right ${coin.rsi >= 70 ? 'text-red-500' : coin.rsi <= 30 ? 'text-green-500' : ''}`}
+                      >
+                        {coin.rsi.toFixed(1)}
+                      </TableCell>
+                      <TableCell className="text-right">{formatKoreanUnit(coin.volume)}</TableCell>
+                      <TableCell className="text-right">
+                        {formatKoreanUnit(coin.volume24h)}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </TooltipProvider>
     </div>
   )
 }

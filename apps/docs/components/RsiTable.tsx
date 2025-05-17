@@ -63,15 +63,17 @@ export default function RsiTable() {
           <thead>
             <tr className="bg-gray-100">
               <th className="p-2 text-left">기호</th>
-              <th className="p-2 text-right">가격</th>
-              <th className="p-2 text-right">1시간%</th>
-              <th className="p-2 text-right">24시간%</th>
+              {/*<th className="p-2 text-right">가격</th>*/}
+              {/*<th className="p-2 text-right">1시간%</th>*/}
+              {/*<th className="p-2 text-right">24시간%</th>*/}
               <th
                 className="cursor-pointer p-2 text-right"
                 onClick={() => setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))}
               >
                 거래량 {sortOrder === 'asc' ? '🔼' : '🔽'}
               </th>
+              <th className="p-2 text-right">거래량(5m)</th>
+              <th className="p-2 text-right">거래량(1h)</th>
               {RSI_INTERVALS.map((int) => (
                 <th key={int} className="p-2 text-right">{`RSI(${int})`}</th>
               ))}
@@ -80,7 +82,6 @@ export default function RsiTable() {
           <tbody>
             {data.map((row) => (
               <tr key={row.symbol} className="border-t border-gray-100">
-                {/*<td className="p-2 font-medium">{row.symbol}</td>*/}
                 <td className="flex items-center gap-2 p-2 font-medium">
                   <img
                     src={`https://cryptoicon-api.pages.dev/api/icon/${row.symbol.replace('USDT', '').toLowerCase()}`}
@@ -88,22 +89,24 @@ export default function RsiTable() {
                     className="h-5 w-5 rounded-full"
                     onError={(e) => (e.currentTarget.style.display = 'none')}
                   />
-                  {row.symbol}
+                  {row.symbol.replace('USDT', '')}
                 </td>
-                <td className="p-2 text-right">${row.price.toFixed(4)}</td>
-                <td
-                  className={`p-2 text-right ${row.change1h >= 0 ? 'text-green-600' : 'text-red-500'}`}
-                >
-                  {row.change1h.toFixed(2)}%
-                </td>
-                <td
-                  className={`p-2 text-right ${row.change24h >= 0 ? 'text-green-600' : 'text-red-500'}`}
-                >
-                  {row.change24h.toFixed(2)}%
-                </td>
+                {/*<td className="p-2 text-right">${row.price.toFixed(4)}</td>*/}
+                {/*<td*/}
+                {/*  className={`p-2 text-right ${row.change1h >= 0 ? 'text-green-600' : 'text-red-500'}`}*/}
+                {/*>*/}
+                {/*  {row.change1h.toFixed(2)}%*/}
+                {/*</td>*/}
+                {/*<td*/}
+                {/*  className={`p-2 text-right ${row.change24h >= 0 ? 'text-green-600' : 'text-red-500'}`}*/}
+                {/*>*/}
+                {/*  {row.change24h.toFixed(2)}%*/}
+                {/*</td>*/}
                 <td className="p-2 text-right">
                   {row.volume.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </td>
+                <td className="p-2 text-right">{row.volume_5m?.toLocaleString()}</td>
+                <td className="p-2 text-right">{row.volume_1h?.toLocaleString()}</td>
                 {RSI_INTERVALS.map((int) => {
                   const value = row[`rsi_${int}`]
                   const color =

@@ -34,3 +34,16 @@ export async function fetchKlines(
   const data = await res.json()
   return data.map((d: any) => parseFloat(d[4])) // Close price
 }
+
+export async function fetchVolume(
+  symbol: string,
+  interval: string,
+  limit: number,
+): Promise<number> {
+  const res = await fetch(
+    `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`,
+  )
+  const data = await res.json()
+  const volume = data.reduce((acc: number, kline: any) => acc + parseFloat(kline[7]), 0) // quoteVolume (USDT 기준)
+  return parseFloat(volume.toFixed(2))
+}

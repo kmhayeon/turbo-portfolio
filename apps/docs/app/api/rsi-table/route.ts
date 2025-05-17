@@ -1,6 +1,11 @@
 // apps/rsi-app/app/api/rsi-table/route.ts
 
-import { fetchSupportedSymbols, fetchPriceStats, fetchKlines } from '../../../lib/binance'
+import {
+  fetchSupportedSymbols,
+  fetchPriceStats,
+  fetchKlines,
+  fetchVolume,
+} from '../../../lib/binance'
 import { calculateRSI } from '../../../lib/rsi'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -19,8 +24,10 @@ export async function GET(req: NextRequest) {
   const results = await Promise.all(
     pageSymbols.map(async (symbol) => {
       try {
-        const [priceStats, ...rsiValues] = await Promise.all([
+        const [priceStats, volume5m, volume1h, ...rsiValues] = await Promise.all([
           fetchPriceStats(symbol),
+          fetchVolume(symbol, '1m', 5), // 거래량(5m) → 1분봉 5개 합산
+          fetchVolume(symbol, '1m', 60), // 거래량(1h) → 1분봉 60개 합산
           ...RSI_INTERVALS.map(async (interval) => {
             const closes = await fetchKlines(symbol, interval)
             return calculateRSI(closes)
@@ -39,6 +46,8 @@ export async function GET(req: NextRequest) {
         return {
           symbol,
           ...priceStats,
+          volume_5m: volume5m,
+          volume_1h: volume1h,
           ...rsiData,
         }
       } catch (err) {
@@ -64,53 +73,3 @@ export async function GET(req: NextRequest) {
     updatedAt: new Date().toISOString(),
   })
 }
-
-// export async function GET(req: NextRequest) {
-//   const { searchParams } = new URL(req.url)
-//   const page = parseInt(searchParams.get('page') || '1')
-//
-//   const allSymbols = await fetchSupportedSymbols()
-//   const pageSymbols = allSymbols.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
-//
-//   const results = await Promise.all(
-//     pageSymbols.map(async (symbol) => {
-//       try {
-//         const [priceStats, ...rsiValues] = await Promise.all([
-//           fetchPriceStats(symbol),
-//           ...RSI_INTERVALS.map(async (interval) => {
-//             const closes = await fetchKlines(symbol, interval)
-//             return calculateRSI(closes)
-//           }),
-//         ])
-//
-//         const rsiData = RSI_INTERVALS.reduce(
-//           (acc, interval, idx) => {
-//             // @ts-ignore
-//             acc[`rsi_${interval}`] = rsiValues[idx]
-//             return acc
-//           },
-//           {} as Record<string, number | null>,
-//         )
-//
-//         return {
-//           symbol,
-//           ...priceStats,
-//           ...rsiData,
-//         }
-//       } catch (err) {
-//         console.error(`[RSI_TABLE] Error for ${symbol}`, err)
-//         return null
-//       }
-//     }),
-//   )
-//
-//   const filtered = results.filter(Boolean)
-//
-//   return NextResponse.json({
-//     data: filtered,
-//     total: allSymbols.length,
-//     page,
-//     pageSize: PAGE_SIZE,
-//     updatedAt: new Date().toISOString(),
-//   })
-// }

@@ -1,8 +1,4 @@
 {
-  "build": {
-    "env": {
-      "TURBO_TEAM": "haho"
-    }
-  },
-  "includeFiles": ["../../packages/ui/src/**/*"]
+  "buildCommand": "pnpm build",
+  "outputDirectory": "out"
 }

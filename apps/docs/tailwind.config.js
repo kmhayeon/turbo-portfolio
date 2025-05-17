@@ -5,7 +5,8 @@ export default {
     './app/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
     './lib/**/*.{ts,tsx}',
-    '../../packages/ui/src/**/*.{ts,tsx}',
+    // '../../packages/ui/src/**/*.{ts,tsx}',
+    path.resolve(__dirname, '../../packages/ui/src/**/*.{ts,tsx}'),
   ],
   safelist: [
     'text-red-500',

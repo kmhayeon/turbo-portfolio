@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const path = require('path')
+import path from 'path'
 
 export default {
   darkMode: ['class'],

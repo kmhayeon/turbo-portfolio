@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { ArrowLeft, X, Pencil } from 'lucide-react'
 import '@toast-ui/editor/dist/toastui-editor.css'
-import "../../../styles/tui-color-picker.css";
+import '../../../styles/tui-color-picker.css'
 import dynamic from 'next/dynamic'
 
 type BlogPost = {
@@ -20,11 +20,11 @@ type Comment = {
   createdAt: string
 }
 
-const ToastEditor = dynamic(() => import('@toast-ui/react-editor').then(mod => mod.Editor), {
+const ToastEditor = dynamic(() => import('@toast-ui/react-editor').then((mod) => mod.Editor), {
   ssr: false,
 })
 
-const ToastViewer = dynamic(() => import('@toast-ui/react-editor').then(mod => mod.Viewer), {
+const ToastViewer = dynamic(() => import('@toast-ui/react-editor').then((mod) => mod.Viewer), {
   ssr: false,
 })
 
@@ -40,7 +40,6 @@ export default function BlogDetailPage(props: any) {
   const router = useRouter()
   const editorRef = useRef<any>(null)
   const [colorSyntaxPlugin, setColorSyntaxPlugin] = useState<any>(null)
-
 
   // 게시글 불러오기
   useEffect(() => {
@@ -182,7 +181,7 @@ export default function BlogDetailPage(props: any) {
             </button>
           </div>
 
-          <article className="prose prose-sm max-w-none overflow-y-auto h-[500px] pr-2">
+          <article className="prose prose-sm h-[500px] max-w-none overflow-y-auto pr-2">
             <ToastViewer initialValue={post.content} />
           </article>
         </div>
@@ -192,7 +191,7 @@ export default function BlogDetailPage(props: any) {
         <>
           <hr className="my-8" />
           <div className="space-y-4">
-          <h2 className="text-lg font-semibold">댓글</h2>
+            <h2 className="text-lg font-semibold">댓글</h2>
 
             <div className="flex flex-col gap-2">
               {comments.map((comment) => (

@@ -25,7 +25,7 @@ import {
   TableRow,
 } from '../../../packages/ui/src/table'
 import { calculateWilderRSI } from '../lib/rsi'
-import { fetch24hVolume, fetchKlines, fetchTopVolumeSymbols, fetchVolume } from '../lib/binance'
+import { fetch24hVolume, fetchKlines, fetchTopVolumeSymbols, fetchAmount } from '../lib/binance'
 import { formatKoreanUnit } from '../lib/format'
 
 const intervals = ['5m', '15m', '1h', '4h', '12h', '1d']
@@ -42,10 +42,10 @@ const REFRESH_INTERVAL_MS = 300_000
 export default function Dashboard() {
   const [interval, setInterval] = useState('5m')
   const [data, setData] = useState<
-    { symbol: string; rsi: number; volume: number; volume24h: number }[]
+    { symbol: string; rsi: number; amount: number; volume24h: number }[]
   >([])
+  const [sortBy, setSortBy] = useState<'rsi' | 'amount'>('amount')
   const [loading, setLoading] = useState(false)
-  const [sortBy, setSortBy] = useState<'rsi' | 'volume'>('volume')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [countdown, setCountdown] = useState<number>(REFRESH_INTERVAL_MS / 1000)
@@ -55,19 +55,13 @@ export default function Dashboard() {
     try {
       const symbols = await fetchTopVolumeSymbols(50)
       const results = await Promise.all(
-        symbols.map(async (symbol, index) => {
+        symbols.map(async (symbol) => {
           try {
             const closes = await fetchKlines(symbol, interval)
-
-            // if (index === 0) {
-            //   console.log(`📊 ${symbol} (${interval}) closes:`, closes.slice(0, 20))
-            // }
-
-            const volume = await fetchVolume(symbol, interval)
+            const amount = await fetchAmount(symbol, interval)
             const volume24h = await fetch24hVolume(symbol)
             const rsi = calculateWilderRSI(closes)
-
-            return { symbol, rsi, volume, volume24h }
+            return { symbol, rsi, amount, volume24h }
           } catch (err) {
             console.error(`Failed to fetch ${symbol}`, err)
             return null
@@ -76,7 +70,7 @@ export default function Dashboard() {
       )
 
       const filtered = results.filter(
-        (r): r is { symbol: string; rsi: number; volume: number; volume24h: number } => r !== null,
+        (r): r is { symbol: string; rsi: number; amount: number; volume24h: number } => r !== null,
       )
       setData(filtered)
       setLastUpdated(new Date())
@@ -111,7 +105,7 @@ export default function Dashboard() {
     return b[key] - a[key]
   })
 
-  const toggleSort = (key: 'rsi' | 'volume') => {
+  const toggleSort = (key: 'rsi' | 'amount') => {
     if (sortBy === key) {
       setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))
     } else {
@@ -172,22 +166,21 @@ export default function Dashboard() {
                   </TableHead>
                   <TableHead
                     className="cursor-pointer text-right hover:text-white"
-                    onClick={() => toggleSort('volume')}
+                    onClick={() => toggleSort('amount')}
                   >
-                    거래량 {sortBy === 'volume' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
+                    거래대금 {sortBy === 'amount' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
                   </TableHead>
                   <TableHead className="text-right">
                     <div className="flex items-center justify-end gap-1">
-                      거래량(24H)
+                      거래대금(24H)
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <Info className="text-muted-foreground h-4 w-4 cursor-help" />
                         </TooltipTrigger>
                         <TooltipContent>
                           <div className="text-left text-sm">
-                            - 24시간봉 거래량: 오늘 자정부터 누적된 값입니다. (실시간 증가)
-                            <br />- 24H 거래량: 현재 시점 기준 최근 24시간 동안의 거래량입니다.
-                            (선택된 봉 간격과는 무관)
+                            - 선택한 봉 간격의 누적 거래대금입니다.
+                            <br />- 24H 거래대금: 현재 시점 기준 최근 24시간 동안의 거래대금입니다.
                           </div>
                         </TooltipContent>
                       </Tooltip>
@@ -198,7 +191,7 @@ export default function Dashboard() {
               <TableBody>
                 {loading ? (
                   <TableRow>
-                    <TableCell colSpan={3} className="p-4 text-center">
+                    <TableCell colSpan={4} className="p-4 text-center">
                       Loading...
                     </TableCell>
                   </TableRow>
@@ -222,7 +215,7 @@ export default function Dashboard() {
                       >
                         {coin.rsi.toFixed(2)}
                       </TableCell>
-                      <TableCell className="text-right">{formatKoreanUnit(coin.volume)}</TableCell>
+                      <TableCell className="text-right">{formatKoreanUnit(coin.amount)}</TableCell>
                       <TableCell className="text-right">
                         {formatKoreanUnit(coin.volume24h)}
                       </TableCell>

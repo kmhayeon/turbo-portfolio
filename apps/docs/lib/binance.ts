@@ -51,3 +51,26 @@ export async function fetch24hVolume(symbol: string): Promise<number> {
   const data = await res.json()
   return parseFloat(data.quoteVolume) // 24시간 기준 USDT 거래량
 }
+
+// 특정 간격에 대한 거래대금 (가격 * 거래량)의 합산
+export const intervalTo1mCount: Record<string, number> = {
+  '5m': 5,
+  '15m': 15,
+  '1h': 60,
+  '4h': 240,
+  '12h': 720,
+  '1d': 1440,
+}
+
+export async function fetchAmount(symbol: string, interval: string): Promise<number> {
+  const candleCount = intervalTo1mCount[interval]
+  const res = await fetch(
+    `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=1m&limit=${candleCount}`,
+  )
+  const data = await res.json()
+  return data.reduce((sum: number, d: any) => {
+    const close = parseFloat(d[4])
+    const volume = parseFloat(d[5])
+    return sum + close * volume
+  }, 0)
+}

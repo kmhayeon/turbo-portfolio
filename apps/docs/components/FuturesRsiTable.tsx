@@ -74,8 +74,12 @@ export default function FuturesRsiTable() {
           }
         }),
       )
+      // const filtered = results.filter(
+      //   (r): r is { symbol: string; rsi: number; amount: number; volume24h: number } => r !== null,
+      // )
       const filtered = results.filter(
-        (r): r is { symbol: string; rsi: number; amount: number; volume24h: number } => r !== null,
+        (r): r is { symbol: string; rsi: number; amount: number; volume24h: number } =>
+          r !== null && r.amount > 0,
       )
       setData(filtered)
       setLastUpdated(new Date())
@@ -172,22 +176,22 @@ export default function FuturesRsiTable() {
                   >
                     거래대금 {sortBy === 'amount' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
                   </TableHead>
-                  <TableHead className="text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      거래대금(24H)
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="text-muted-foreground h-4 w-4 cursor-help" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <div className="text-left text-sm">
-                            - 선택한 봉 간격의 누적 거래대금입니다.
-                            <br />- 24H 거래대금: 최근 24시간 동안의 선물 마켓 거래대금입니다.
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </TableHead>
+                  {/*<TableHead className="text-right">*/}
+                  {/*  <div className="flex items-center justify-end gap-1">*/}
+                  {/*    거래대금(24H)*/}
+                  {/*    <Tooltip>*/}
+                  {/*      <TooltipTrigger asChild>*/}
+                  {/*        <Info className="text-muted-foreground h-4 w-4 cursor-help" />*/}
+                  {/*      </TooltipTrigger>*/}
+                  {/*      <TooltipContent>*/}
+                  {/*        <div className="text-left text-sm">*/}
+                  {/*          - 선택한 봉 간격의 누적 거래대금입니다.*/}
+                  {/*          <br />- 24H 거래대금: 최근 24시간 동안의 선물 마켓 거래대금입니다.*/}
+                  {/*        </div>*/}
+                  {/*      </TooltipContent>*/}
+                  {/*    </Tooltip>*/}
+                  {/*  </div>*/}
+                  {/*</TableHead>*/}
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -220,9 +224,9 @@ export default function FuturesRsiTable() {
                         {coin.rsi.toFixed(2)}
                       </TableCell>
                       <TableCell className="text-right">{formatKoreanUnit(coin.amount)}</TableCell>
-                      <TableCell className="text-right">
-                        {formatKoreanUnit(coin.volume24h)}
-                      </TableCell>
+                      {/*<TableCell className="text-right">*/}
+                      {/*  {formatKoreanUnit(coin.volume24h)}*/}
+                      {/*</TableCell>*/}
                     </TableRow>
                   ))
                 )}

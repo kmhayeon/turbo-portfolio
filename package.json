@@ -24,6 +24,8 @@
     "node": ">=18"
   },
   "dependencies": {
-    "aos": "^2.3.4"
+    "@types/lodash": "^4.17.16",
+    "aos": "^2.3.4",
+    "lodash": "^4.17.21"
   }
 }

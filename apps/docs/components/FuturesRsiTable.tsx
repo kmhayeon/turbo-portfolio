@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '@repo/ui'
 import { ArrowDownUp } from 'lucide-react'
+import RsiAlertManager from './RsiAlertManager'
 import {
   Table,
   TableBody,
@@ -149,11 +150,20 @@ export default function FuturesRsiTable() {
                 </span>
               )}
             </div>
-            {lastUpdated && (
-              <span className="text-muted-foreground pt-2 text-sm sm:ml-auto sm:pt-0">
-                UPDATE: {lastUpdated.toLocaleTimeString()}
-              </span>
-            )}
+
+            <div className="flex justify-between gap-3.5">
+              {lastUpdated && (
+                <span className="text-muted-foreground pt-2 text-sm sm:ml-auto sm:pt-0">
+                  UPDATE: {lastUpdated.toLocaleTimeString()}
+                </span>
+              )}
+
+              {/* 알림 아이콘 */}
+              <RsiAlertManager
+                interval={interval}
+                data={data.map(({ symbol, rsi }) => ({ symbol, rsi }))}
+              />
+            </div>
           </div>
 
           <Card>

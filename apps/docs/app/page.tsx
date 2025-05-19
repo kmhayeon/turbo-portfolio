@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { Header } from '@/components/Header'
 import React from 'react'
+import Footer from '@/components/Footer'
 
 const RsiTable = dynamic(() => import('../components/RsiTable'), { ssr: false })
 const FuturesRsiTable = dynamic(() => import('../components/FuturesRsiTable'), { ssr: false })
@@ -28,13 +29,18 @@ const FuturesRsiTable = dynamic(() => import('../components/FuturesRsiTable'), {
 
 export default function Page() {
   return (
-    <main>
+    <div className="flex min-h-screen flex-col">
       <Header />
-      <div className="flex flex-col gap-4 !p-2 p-2 lg:flex-row lg:p-6">
-        <div className="w-full lg:w-1/2">
-          <FuturesRsiTable />
+
+      <main className="flex-1">
+        <div className="flex min-h-[600px] flex-col gap-4 !p-2 p-2 lg:flex-row lg:p-6">
+          <div className="w-full lg:w-1/2">
+            <FuturesRsiTable />
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+
+      <Footer />
+    </div>
   )
 }

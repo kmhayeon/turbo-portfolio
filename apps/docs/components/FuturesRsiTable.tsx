@@ -126,7 +126,7 @@ export default function FuturesRsiTable() {
 
   return (
     <>
-      <h1 className="pl-6 pt-8 text-lg font-bold">Futures Trading</h1>
+      <h1 className="pl-2 pt-8 text-lg font-bold lg:pl-6">Futures Trading</h1>
       <div className="p-2 lg:p-6">
         <TooltipProvider>
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -192,8 +192,11 @@ export default function FuturesRsiTable() {
                 <TableBody>
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={4} className="p-4 text-center">
-                        Loading...
+                      <TableCell colSpan={4} className="h-[500px] p-4 text-center">
+                        <div className="flex h-[400px] flex-col items-center justify-center gap-4">
+                          <span className="text-4xl">🐢</span>
+                          <p className="text-sm text-white">Loading...</p>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ) : (

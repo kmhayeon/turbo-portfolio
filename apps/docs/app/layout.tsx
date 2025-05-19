@@ -2,8 +2,8 @@ import React from 'react'
 import './globals.css'
 
 export const metadata = {
-  title: 'Binance Futures',
-  description: 'Binance Futures',
+  title: 'Turtures',
+  description: 'Turtures',
   icons: {
     icon: '/favicon.ico',
   },

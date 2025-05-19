@@ -33,6 +33,7 @@ export async function fetchKlines(
     `https://api.binance.com/api/v3/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`,
   )
   const data = await res.json()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return data.map((d: any) => parseFloat(d[4])) // 종가(close)
 }
 

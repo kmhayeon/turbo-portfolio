@@ -150,7 +150,7 @@ export default function FuturesRsiTable() {
               )}
             </div>
             {lastUpdated && (
-              <span className="text-muted-foreground text-sm">
+              <span className="text-muted-foreground pt-2 text-sm sm:ml-auto sm:pt-0">
                 UPDATE: {lastUpdated.toLocaleTimeString()}
               </span>
             )}

@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Card, CardContent } from '@repo/ui'
 import { ArrowDownUp, Bell, BellOff, RefreshCw } from 'lucide-react'
-import isEqual from 'lodash/isEqual'
+import { isEqual } from 'lodash'
 import {
   Table,
   TableBody,

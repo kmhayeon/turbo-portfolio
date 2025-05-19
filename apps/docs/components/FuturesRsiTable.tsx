@@ -126,7 +126,7 @@ export default function FuturesRsiTable() {
   return (
     <>
       <h1 className="pl-6 text-lg font-bold">선물 마켓</h1>
-      <div className="p-6">
+      <div className="p-2 lg:p-6">
         <TooltipProvider>
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-4">
@@ -169,7 +169,7 @@ export default function FuturesRsiTable() {
                       RSI {sortBy === 'rsi' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
                     </TableHead>
                     <TableHead
-                      className="w-[100px] cursor-pointer px-2 text-right hover:text-white"
+                      className="w-[100px] cursor-pointer px-4 text-right hover:text-white"
                       onClick={() => toggleSort('amount')}
                     >
                       거래대금 {sortBy === 'amount' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
@@ -215,7 +215,7 @@ export default function FuturesRsiTable() {
                         >
                           {coin.rsi.toFixed(2)}
                         </TableCell>
-                        <TableCell className="w-[100px] px-2 text-right">
+                        <TableCell className="w-[100px] px-4 text-right">
                           {formatKoreanUnit(coin.amount)}
                         </TableCell>
                       </TableRow>

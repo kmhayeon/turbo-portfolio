@@ -5,7 +5,7 @@ import Link from 'next/link'
 export function Header() {
   return (
     <header className="bg-background text-foreground border-b">
-      <div className="mx-auto flex items-center px-6 py-6 pl-4 pr-4">
+      <div className="mx-auto flex items-center px-6 py-6">
         <div className="text-white-500 text-lg font-bold">Binance Futures</div>
         {/*<nav className="flex gap-6 text-sm font-medium">*/}
         {/*  <Link*/}

@@ -30,7 +30,7 @@ export default function Page() {
   return (
     <main>
       <Header />
-      <div className="flex flex-col gap-4 p-6 lg:flex-row">
+      <div className="flex flex-col gap-4 !p-2 p-2 lg:flex-row lg:p-6">
         <div className="w-full lg:w-1/2">
           <FuturesRsiTable />
         </div>

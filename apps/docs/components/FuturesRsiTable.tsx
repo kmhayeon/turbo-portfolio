@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '@repo/ui'
-import { ArrowDownUp } from 'lucide-react'
+import { ArrowDownUp, RefreshCw } from 'lucide-react'
 import RsiAlertManager from './RsiAlertManager'
 import {
   Table,
@@ -127,7 +127,18 @@ export default function FuturesRsiTable() {
 
   return (
     <>
-      <h1 className="pl-2 pt-8 text-lg font-bold lg:pl-6">Futures Trading</h1>
+      <div className="flex items-center">
+        <h1 className="pl-2 pr-3 pt-3 text-lg font-bold lg:pl-6">Futures Trading</h1>
+
+        <div className="pt-3">
+          {/* 알림 아이콘 */}
+          <RsiAlertManager
+            interval={interval}
+            data={data.map(({ symbol, rsi }) => ({ symbol, rsi }))}
+          />
+        </div>
+      </div>
+
       <div className="p-2 lg:p-6">
         <TooltipProvider>
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -150,19 +161,22 @@ export default function FuturesRsiTable() {
                 </span>
               )}
             </div>
-
-            <div className="flex justify-between gap-3.5">
+            <div className="text-muted-foreground flex items-center justify-between gap-4 pt-2 text-sm sm:ml-auto sm:justify-normal sm:pt-0">
               {lastUpdated && (
                 <span className="text-muted-foreground pt-2 text-sm sm:ml-auto sm:pt-0">
                   UPDATE: {lastUpdated.toLocaleTimeString()}
                 </span>
               )}
-
-              {/* 알림 아이콘 */}
-              <RsiAlertManager
-                interval={interval}
-                data={data.map(({ symbol, rsi }) => ({ symbol, rsi }))}
-              />
+              <button
+                onClick={() => {
+                  loadData()
+                  setCountdown(REFRESH_INTERVAL_MS / 1000)
+                }}
+                className="border-muted-foreground hover:bg-muted/20 rounded-md border p-1 transition"
+                title="새로고침"
+              >
+                <RefreshCw size={16} className="text-muted-foreground" />
+              </button>
             </div>
           </div>
 

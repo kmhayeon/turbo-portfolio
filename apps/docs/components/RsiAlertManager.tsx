@@ -23,8 +23,10 @@ export default function RsiAlertManager({ data, interval }: RsiAlertManagerProps
   useEffect(() => {
     if (interval !== '5m') return // ✅ 조건 추가: 5분봉이 아닐 때 무시
 
-    const currentHigh = new Set(data.filter((d) => d.rsi >= 60).map((d) => d.symbol))
+    const currentHigh = new Set(data.filter((d) => d.rsi >= 75).map((d) => d.symbol))
     const newlyHigh = [...currentHigh].filter((symbol) => !prevSymbolsRef.current.has(symbol))
+
+    console.log('newlyHigh', newlyHigh)
 
     if (enabled && newlyHigh.length > 0 && alertAudioRef.current) {
       alertAudioRef.current.play().catch((e) => {

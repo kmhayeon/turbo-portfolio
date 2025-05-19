@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Info } from 'lucide-react'
+import React, { useEffect, useState } from 'react'
+import { Card, CardContent } from '@repo/ui'
 import {
   Table,
   TableBody,
@@ -23,14 +23,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../../packages/ui/src/tooltip'
-import { Card, CardContent } from '@repo/ui'
 import { calculateWilderRSI } from '../lib/rsi'
 import {
   fetchFuturesKlines,
   fetchFuturesAmount,
   fetchTopFuturesSymbols,
   fetchFutures24hVolume,
-  intervalTo1mCount,
 } from '../lib/binance-futures'
 import { formatKoreanUnit } from '../lib/format'
 
@@ -74,9 +72,6 @@ export default function FuturesRsiTable() {
           }
         }),
       )
-      // const filtered = results.filter(
-      //   (r): r is { symbol: string; rsi: number; amount: number; volume24h: number } => r !== null,
-      // )
       const filtered = results.filter(
         (r): r is { symbol: string; rsi: number; amount: number; volume24h: number } =>
           r !== null && r.amount > 0,
@@ -129,112 +124,109 @@ export default function FuturesRsiTable() {
   }
 
   return (
-    <div className="p-6">
-      <TooltipProvider>
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Select value={interval} onValueChange={setInterval}>
-              <SelectTrigger className="w-[120px]">
-                <SelectValue>{intervalLabels[interval]}</SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {intervals.map((item) => (
-                  <SelectItem key={item} value={item}>
-                    {intervalLabels[item]}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+    <>
+      <h1 className="pl-6 text-lg font-bold">선물 마켓</h1>
+      <div className="p-6">
+        <TooltipProvider>
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-4">
+              <Select value={interval} onValueChange={setInterval}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue>{intervalLabels[interval]}</SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {intervals.map((item) => (
+                    <SelectItem key={item} value={item}>
+                      {intervalLabels[item]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {lastUpdated && (
+                <span className="text-muted-foreground pl-2 text-sm">
+                  {Math.floor(countdown / 60)}분 {countdown % 60}초 후 갱신
+                </span>
+              )}
+            </div>
             {lastUpdated && (
               <span className="text-muted-foreground text-sm">
-                {Math.floor(countdown / 60)}분 {countdown % 60}초 후 갱신
+                업데이트: {lastUpdated.toLocaleTimeString()}
               </span>
             )}
           </div>
-          {lastUpdated && (
-            <span className="text-muted-foreground text-sm">
-              업데이트: {lastUpdated.toLocaleTimeString()}
-            </span>
-          )}
-        </div>
 
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>코인</TableHead>
-                  <TableHead
-                    className="cursor-pointer text-right hover:text-white"
-                    onClick={() => toggleSort('rsi')}
-                  >
-                    RSI {sortBy === 'rsi' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
-                  </TableHead>
-                  <TableHead
-                    className="cursor-pointer text-right hover:text-white"
-                    onClick={() => toggleSort('amount')}
-                  >
-                    거래대금 {sortBy === 'amount' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
-                  </TableHead>
-                  {/*<TableHead className="text-right">*/}
-                  {/*  <div className="flex items-center justify-end gap-1">*/}
-                  {/*    거래대금(24H)*/}
-                  {/*    <Tooltip>*/}
-                  {/*      <TooltipTrigger asChild>*/}
-                  {/*        <Info className="text-muted-foreground h-4 w-4 cursor-help" />*/}
-                  {/*      </TooltipTrigger>*/}
-                  {/*      <TooltipContent>*/}
-                  {/*        <div className="text-left text-sm">*/}
-                  {/*          - 선택한 봉 간격의 누적 거래대금입니다.*/}
-                  {/*          <br />- 24H 거래대금: 최근 24시간 동안의 선물 마켓 거래대금입니다.*/}
-                  {/*        </div>*/}
-                  {/*      </TooltipContent>*/}
-                  {/*    </Tooltip>*/}
-                  {/*  </div>*/}
-                  {/*</TableHead>*/}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {loading ? (
+          <Card>
+            <CardContent className="p-0" style={{ backgroundColor: '#0d1116' }}>
+              <Table className="table-fixed">
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={4} className="p-4 text-center">
-                      Loading...
-                    </TableCell>
+                    <TableHead className="w-[20px] px-1 text-center">-</TableHead>
+                    <TableHead className="w-[120px] px-2">SYMBOL</TableHead>
+                    <TableHead
+                      className="w-[60px] cursor-pointer px-2 text-right hover:text-white"
+                      onClick={() => toggleSort('rsi')}
+                    >
+                      RSI {sortBy === 'rsi' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
+                    </TableHead>
+                    <TableHead
+                      className="w-[100px] cursor-pointer px-2 text-right hover:text-white"
+                      onClick={() => toggleSort('amount')}
+                    >
+                      거래대금 {sortBy === 'amount' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
+                    </TableHead>
                   </TableRow>
-                ) : (
-                  sortedData.map((coin) => (
-                    <TableRow key={coin.symbol}>
-                      <TableCell className="flex items-center gap-2">
-                        <img
-                          src={getCoinLogo(coin.symbol)}
-                          alt={coin.symbol}
-                          width={20}
-                          height={20}
-                          onError={(e) => {
-                            e.currentTarget.src = '/fallback-icon.png'
-                          }}
-                        />
-                        {getCoinName(coin.symbol)}
+                </TableHeader>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={4} className="p-4 text-center">
+                        Loading...
                       </TableCell>
-                      <TableCell
-                        className={`text-right ${
-                          coin.rsi >= 70 ? 'text-red-500' : coin.rsi <= 30 ? 'text-green-500' : ''
-                        }`}
-                      >
-                        {coin.rsi.toFixed(2)}
-                      </TableCell>
-                      <TableCell className="text-right">{formatKoreanUnit(coin.amount)}</TableCell>
-                      {/*<TableCell className="text-right">*/}
-                      {/*  {formatKoreanUnit(coin.volume24h)}*/}
-                      {/*</TableCell>*/}
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </TooltipProvider>
-    </div>
+                  ) : (
+                    sortedData.map((coin, index) => (
+                      <TableRow key={coin.symbol}>
+                        <TableCell className="text-muted-foreground px-1 text-center text-sm">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell className="flex items-center gap-2 px-2">
+                          <img
+                            src={getCoinLogo(coin.symbol)}
+                            alt={coin.symbol}
+                            width={20}
+                            height={20}
+                            onError={(e) => {
+                              const symbol = getCoinName(coin.symbol).toUpperCase()
+                              const fallbackPath = `/${symbol}.png`
+                              if (!e.currentTarget.dataset.retry) {
+                                e.currentTarget.src = fallbackPath
+                                e.currentTarget.dataset.retry = '1'
+                              } else {
+                                e.currentTarget.src = '/fallback-icon.png'
+                              }
+                            }}
+                          />
+                          {getCoinName(coin.symbol)}
+                        </TableCell>
+                        <TableCell
+                          className={`w-[60px] px-2 text-right ${
+                            coin.rsi >= 70 ? 'text-red-500' : coin.rsi <= 30 ? 'text-green-500' : ''
+                          }`}
+                        >
+                          {coin.rsi.toFixed(2)}
+                        </TableCell>
+                        <TableCell className="w-[100px] px-2 text-right">
+                          {formatKoreanUnit(coin.amount)}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
+        </TooltipProvider>
+      </div>
+    </>
   )
 }

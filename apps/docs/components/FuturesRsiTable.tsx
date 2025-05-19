@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Card, CardContent } from '@repo/ui'
+import { ArrowDownUp } from 'lucide-react'
 import {
   Table,
   TableBody,
@@ -125,7 +126,7 @@ export default function FuturesRsiTable() {
 
   return (
     <>
-      <h1 className="pl-6 text-lg font-bold">선물 마켓</h1>
+      <h1 className="pl-6 pt-8 text-lg font-bold">Futures Trading</h1>
       <div className="p-2 lg:p-6">
         <TooltipProvider>
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -150,7 +151,7 @@ export default function FuturesRsiTable() {
             </div>
             {lastUpdated && (
               <span className="text-muted-foreground text-sm">
-                업데이트: {lastUpdated.toLocaleTimeString()}
+                UPDATE: {lastUpdated.toLocaleTimeString()}
               </span>
             )}
           </div>
@@ -166,13 +167,25 @@ export default function FuturesRsiTable() {
                       className="w-[60px] cursor-pointer px-2 text-right hover:text-white"
                       onClick={() => toggleSort('rsi')}
                     >
-                      RSI {sortBy === 'rsi' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
+                      <div className="flex items-center justify-end gap-1">
+                        <span>RSI</span>
+                        <ArrowDownUp
+                          size={14}
+                          className={sortBy === 'rsi' ? 'text-white' : 'text-muted-foreground'}
+                        />
+                      </div>
                     </TableHead>
                     <TableHead
                       className="w-[100px] cursor-pointer px-4 text-right hover:text-white"
                       onClick={() => toggleSort('amount')}
                     >
-                      거래대금 {sortBy === 'amount' ? (sortOrder === 'asc' ? '▲' : '▼') : ''}
+                      <div className="flex items-center justify-end gap-1">
+                        <span>거래대금</span>
+                        <ArrowDownUp
+                          size={14}
+                          className={sortBy === 'amount' ? 'text-white' : 'text-muted-foreground'}
+                        />
+                      </div>
                     </TableHead>
                   </TableRow>
                 </TableHeader>

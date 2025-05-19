@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Card, CardContent } from '@repo/ui'
-import { ArrowDownUp, RefreshCw } from 'lucide-react'
-import RsiAlertManager from './RsiAlertManager'
+import { ArrowDownUp, Bell, BellOff, RefreshCw } from 'lucide-react'
+import isEqual from 'lodash/isEqual'
 import {
   Table,
   TableBody,
@@ -19,18 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../../packages/ui/src/select'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '../../../packages/ui/src/tooltip'
+import { TooltipProvider } from '../../../packages/ui/src/tooltip'
 import { calculateWilderRSI } from '../lib/rsi'
 import {
-  fetchFuturesKlines,
-  fetchFuturesAmount,
-  fetchTopFuturesSymbols,
   fetchFutures24hVolume,
+  fetchFuturesAmount,
+  fetchFuturesKlines,
+  fetchTopFuturesSymbols,
 } from '../lib/binance-futures'
 import { formatKoreanUnit } from '../lib/format'
 
@@ -59,6 +54,7 @@ export default function FuturesRsiTable() {
 
   const loadData = async () => {
     setLoading(true)
+    console.log('📥 loadData called')
     try {
       const symbols = await fetchTopFuturesSymbols(100)
       const results = await Promise.all(
@@ -78,9 +74,14 @@ export default function FuturesRsiTable() {
         (r): r is { symbol: string; rsi: number; amount: number; volume24h: number } =>
           r !== null && r.amount > 0,
       )
-      setData(filtered)
-      setLastUpdated(new Date())
-      setCountdown(REFRESH_INTERVAL_MS / 1000)
+
+      const isSame = isEqual(data, filtered)
+
+      if (!isSame) {
+        setData(filtered)
+        setLastUpdated(new Date())
+        setCountdown(REFRESH_INTERVAL_MS / 1000)
+      }
     } catch (err) {
       console.error('선물 마켓 데이터 로딩 실패:', err)
     } finally {
@@ -89,13 +90,14 @@ export default function FuturesRsiTable() {
   }
 
   useEffect(() => {
+    // 컴포넌트 마운트 시 1회 실행
     loadData()
 
-    const intervalId: number = window.setInterval(() => {
+    const intervalId = window.setInterval(() => {
       loadData()
     }, REFRESH_INTERVAL_MS)
 
-    const countdownId: number = window.setInterval(() => {
+    const countdownId = window.setInterval(() => {
       setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
     }, 1000)
 
@@ -103,8 +105,16 @@ export default function FuturesRsiTable() {
       clearInterval(intervalId)
       clearInterval(countdownId)
     }
+  }, []) // ✅ 타이머는 최초 1번만 설정
+
+  useEffect(() => {
+    // ✅ interval이 바뀔 때마다 데이터 즉시 갱신 (타이머는 건들지 않음)
+    loadData()
   }, [interval])
 
+  useEffect(() => {
+    console.log('📊 data changed:', data)
+  }, [data])
   const sortedData = [...data].sort((a, b) => {
     const key = sortBy
     if (sortOrder === 'asc') return a[key] - b[key]
@@ -125,17 +135,53 @@ export default function FuturesRsiTable() {
     return `https://cryptoicon-api.pages.dev/api/icon/${getCoinName(symbol).toLowerCase()}`
   }
 
+  const alertAudioRef = useRef<HTMLAudioElement | null>(null)
+  const [alertEnabled, setAlertEnabled] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('rsi-alert-enabled') !== 'false'
+    }
+    return true
+  })
+  const lastAlertTimeRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    localStorage.setItem('rsi-alert-enabled', alertEnabled.toString())
+  }, [alertEnabled])
+
+  useEffect(() => {
+    if (interval !== '5m') return
+    if (loading) return // ⛔ 로딩 중일 땐 무시
+
+    const now = Date.now()
+    const hasHighRsi = data.some((d) => d.rsi >= 75)
+
+    const shouldAlert = alertEnabled && hasHighRsi
+
+    if (shouldAlert) {
+      alertAudioRef.current?.play().catch((e) => {
+        console.warn('🔕 Audio play failed:', e)
+      })
+      lastAlertTimeRef.current = now
+    }
+  }, [data, interval, loading])
+
   return (
     <>
       <div className="flex items-center">
         <h1 className="pl-2 pr-3 pt-3 text-lg font-bold lg:pl-6">Futures Trading</h1>
 
         <div className="pt-3">
-          {/* 알림 아이콘 */}
-          <RsiAlertManager
-            interval={interval}
-            data={data.map(({ symbol, rsi }) => ({ symbol, rsi }))}
-          />
+          {interval === '5m' && (
+            <div className="flex items-center gap-2">
+              <audio ref={alertAudioRef} src="/alert.mp3" preload="auto" />
+              <button
+                onClick={() => setAlertEnabled((prev) => !prev)}
+                className="text-muted-foreground flex items-center gap-1 hover:text-white"
+              >
+                {alertEnabled ? <Bell size={18} /> : <BellOff size={18} />}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

@@ -58,6 +58,15 @@ export async function fetchFuturesKlines(
   const res = await fetch(
     `https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=${interval}&limit=${limit}`,
   )
+
+  if (res.status === 429) {
+    throw new Error(`429: Too Many Requests for ${symbol}`)
+  }
+
+  if (!res.ok) {
+    throw new Error(`Binance klines fetch failed: ${res.status} for ${symbol}`)
+  }
+
   const data = await res.json()
   return data.map((d: any) => parseFloat(d[4])) // [4]: 종가
 }

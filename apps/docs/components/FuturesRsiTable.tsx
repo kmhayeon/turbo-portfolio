@@ -73,6 +73,7 @@ export default function FuturesRsiTable() {
         }),
       )
 
+      const failedCount = results.filter((r) => r === null).length
       const filtered = results.filter(
         (r): r is { symbol: string; rsi: number; amount: number; volume24h: number } =>
           r !== null && r.amount > 0,
@@ -85,11 +86,38 @@ export default function FuturesRsiTable() {
         setLastUpdated(new Date())
         setCountdown(REFRESH_INTERVAL_MS / 1000)
       }
+
+      // ✅ 실패한 심볼이 있으면 토스트 출력
+      if (failedCount > 0) {
+        toast({
+          title: `${failedCount}개의 심볼 데이터 불러오기 실패`,
+          description: (
+            <>
+              일부 코인은 표시되지 않을 수 있습니다.
+              <br />
+              1분 뒤에 새로고침을 클릭해주세요.
+            </>
+          ),
+          variant: 'destructive',
+        })
+      }
     } catch (err: any) {
       if (err.message.includes('429')) {
         toast({
-          title: '데이터가 갱신되지 않았습니다.',
+          title: '데이터 갱신 실패',
           description: '1분 뒤에 다시 시도해주세요.',
+          variant: 'destructive',
+        })
+      } else if (err.message.includes('418')) {
+        toast({
+          title: '요청 차단',
+          description: (
+            <>
+              과도한 요청으로 바이낸스에서 일시적으로 차단되었습니다.
+              <br />
+              IP 변경 또는 잠시 후 다시 시도해주세요.
+            </>
+          ),
           variant: 'destructive',
         })
       } else {

@@ -54,7 +54,7 @@ export default function FuturesRsiTable() {
 
   const loadData = async () => {
     setLoading(true)
-    console.log('📥 loadData called')
+
     try {
       const symbols = await fetchTopFuturesSymbols(100)
       const results = await Promise.all(
@@ -112,9 +112,6 @@ export default function FuturesRsiTable() {
     loadData()
   }, [interval])
 
-  useEffect(() => {
-    console.log('📊 data changed:', data)
-  }, [data])
   const sortedData = [...data].sort((a, b) => {
     const key = sortBy
     if (sortOrder === 'asc') return a[key] - b[key]

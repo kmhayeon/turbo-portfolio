@@ -24,6 +24,7 @@
     "node": ">=18"
   },
   "dependencies": {
+    "@radix-ui/react-toast": "^1.2.13",
     "@types/lodash": "^4.17.16",
     "aos": "^2.3.4",
     "lodash": "^4.17.21"

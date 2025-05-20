@@ -5,27 +5,7 @@ import { Header } from '@/components/Header'
 import React from 'react'
 import Footer from '@/components/Footer'
 
-const RsiTable = dynamic(() => import('../components/RsiTable'), { ssr: false })
 const FuturesRsiTable = dynamic(() => import('../components/FuturesRsiTable'), { ssr: false })
-
-// export default function Page() {
-//   return (
-//     <main>
-//       <Header />
-//       {/*<div className="flex flex-col gap-4 p-6 lg:flex-row">*/}
-//       <div className="w-full">
-//         {/*<div className="w-full lg:w-1/2">*/}
-//         {/*  <h1 className="mb-2 text-lg font-bold">현물 마켓</h1>*/}
-//         {/*  <RsiTable />*/}
-//         {/*</div>*/}
-//         {/*<div className="w-full lg:w-1/2">*/}
-//         {/*<h1 className="mb-2 text-lg font-bold">선물 마켓</h1>*/}
-//         <FuturesRsiTable />
-//         {/*</div>*/}
-//       </div>
-//     </main>
-//   )
-// }
 
 export default function Page() {
   return (

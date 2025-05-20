@@ -10,6 +10,15 @@
  */
 export async function fetchTopFuturesSymbols(limit = 100): Promise<string[]> {
   const res = await fetch('https://fapi.binance.com/fapi/v1/ticker/24hr')
+
+  if (res.status === 429) {
+    throw new Error('429: Too Many Requests')
+  }
+
+  if (!res.ok) {
+    throw new Error(`Binance API 응답 오류: ${res.status}`)
+  }
+
   const data = await res.json()
 
   return data

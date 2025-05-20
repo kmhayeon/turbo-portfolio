@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Card, CardContent } from '@repo/ui'
 import { ArrowDownUp, Bell, BellOff, RefreshCw } from 'lucide-react'
 import { isEqual } from 'lodash'
+import { toast } from '@repo/ui'
+
 import {
   Table,
   TableBody,
@@ -82,18 +84,26 @@ export default function FuturesRsiTable() {
         setLastUpdated(new Date())
         setCountdown(REFRESH_INTERVAL_MS / 1000)
       }
-    } catch (err) {
-      console.error('선물 마켓 데이터 로딩 실패:', err)
+    } catch (err: any) {
+      if (err.message.includes('429')) {
+        toast({
+          title: '데이터가 갱신되지 않았습니다',
+          description: '5초 뒤에 다시 시도해주세요.',
+          variant: 'destructive',
+        })
+      } else {
+        console.error('선물 마켓 데이터 로딩 실패:', err)
+      }
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    // 컴포넌트 마운트 시 1회 실행
     loadData()
 
     const intervalId = window.setInterval(() => {
+      console.log('[loadData] triggered by timer')
       loadData()
     }, REFRESH_INTERVAL_MS)
 
@@ -105,9 +115,10 @@ export default function FuturesRsiTable() {
       clearInterval(intervalId)
       clearInterval(countdownId)
     }
-  }, []) // ✅ 타이머는 최초 1번만 설정
+  }, [])
 
   useEffect(() => {
+    console.log('[loadData] triggered by interval change or initial mount')
     // ✅ interval이 바뀔 때마다 데이터 즉시 갱신 (타이머는 건들지 않음)
     loadData()
   }, [interval])

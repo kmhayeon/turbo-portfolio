@@ -24,10 +24,9 @@ import {
 import { TooltipProvider } from '../../../packages/ui/src/tooltip'
 import { calculateWilderRSI } from '../lib/rsi'
 import {
-  fetchFutures24hVolume,
   fetchFuturesAmount,
   fetchFuturesKlines,
-  fetchTopFuturesSymbols,
+  fetchTopFuturesSymbolsWithVolume,
 } from '../lib/binance-futures'
 import { formatKoreanUnit } from '../lib/format'
 
@@ -54,27 +53,26 @@ export default function FuturesRsiTable() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [countdown, setCountdown] = useState<number>(REFRESH_INTERVAL_MS / 1000)
 
-  const intervalIdRef = useRef<number | null>(null)
-  const countdownIdRef = useRef<number | null>(null)
-
   const loadData = async () => {
     setLoading(true)
 
     try {
-      const symbols = await fetchTopFuturesSymbols(100)
+      const symbolsWithVolume = await fetchTopFuturesSymbolsWithVolume(100)
+
       const results = await Promise.all(
-        symbols.map(async (symbol) => {
+        symbolsWithVolume.map(async ({ symbol, volume24h }) => {
           try {
             const closes = await fetchFuturesKlines(symbol, interval)
             const rsi = calculateWilderRSI(closes)
             const amount = await fetchFuturesAmount(symbol, interval)
-            const volume24h = await fetchFutures24hVolume(symbol)
+
             return { symbol, rsi, amount, volume24h }
           } catch {
             return null
           }
         }),
       )
+
       const filtered = results.filter(
         (r): r is { symbol: string; rsi: number; amount: number; volume24h: number } =>
           r !== null && r.amount > 0,
@@ -103,45 +101,31 @@ export default function FuturesRsiTable() {
   }
 
   useEffect(() => {
+    // 컴포넌트 마운트 시 1회 실행
     loadData()
-    setCountdown(REFRESH_INTERVAL_MS / 1000)
 
-    // 5분마다 데이터 로딩
     const intervalId = window.setInterval(() => {
-      console.log('[loadData] triggered by timer', new Date().toISOString())
       loadData()
-      setCountdown(REFRESH_INTERVAL_MS / 1000) // 초기화
     }, REFRESH_INTERVAL_MS)
-    intervalIdRef.current = intervalId
 
-    // 1초마다 카운트다운 감소
     const countdownId = window.setInterval(() => {
       setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
     }, 1000)
-    countdownIdRef.current = countdownId
 
     return () => {
-      if (intervalIdRef.current !== null) {
-        clearInterval(intervalIdRef.current)
-        intervalIdRef.current = null
-      }
-      if (countdownIdRef.current !== null) {
-        clearInterval(countdownIdRef.current)
-        countdownIdRef.current = null
-      }
+      clearInterval(intervalId)
+      clearInterval(countdownId)
     }
-  }, [])
+  }, []) // ✅ 타이머는 최초 1번만 설정
 
   useEffect(() => {
-    console.log('[loadData] triggered by interval change or initial mount')
     // ✅ interval이 바뀔 때마다 데이터 즉시 갱신 (타이머는 건들지 않음)
     loadData()
   }, [interval])
 
   const sortedData = [...data].sort((a, b) => {
     const key = sortBy
-    if (sortOrder === 'asc') return a[key] - b[key]
-    return b[key] - a[key]
+    return sortOrder === 'asc' ? a[key] - b[key] : b[key] - a[key]
   })
 
   const toggleSort = (key: 'rsi' | 'amount') => {
@@ -154,9 +138,8 @@ export default function FuturesRsiTable() {
   }
 
   const getCoinName = (symbol: string) => symbol.replace('USDT', '')
-  const getCoinLogo = (symbol: string) => {
-    return `https://cryptoicon-api.pages.dev/api/icon/${getCoinName(symbol).toLowerCase()}`
-  }
+  const getCoinLogo = (symbol: string) =>
+    `https://cryptoicon-api.pages.dev/api/icon/${getCoinName(symbol).toLowerCase()}`
 
   const alertAudioRef = useRef<HTMLAudioElement | null>(null)
   const [alertEnabled, setAlertEnabled] = useState(() => {
@@ -192,7 +175,6 @@ export default function FuturesRsiTable() {
     <>
       <div className="flex items-center">
         <h1 className="pl-2 pr-3 pt-3 text-lg font-bold lg:pl-6">Futures Trading</h1>
-
         <div className="pt-3">
           {interval === '5m' && (
             <div className="flex items-center gap-2">

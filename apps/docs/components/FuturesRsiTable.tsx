@@ -54,6 +54,9 @@ export default function FuturesRsiTable() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const [countdown, setCountdown] = useState<number>(REFRESH_INTERVAL_MS / 1000)
 
+  const intervalIdRef = useRef<number | null>(null)
+  const countdownIdRef = useRef<number | null>(null)
+
   const loadData = async () => {
     setLoading(true)
 
@@ -87,7 +90,7 @@ export default function FuturesRsiTable() {
     } catch (err: any) {
       if (err.message.includes('429')) {
         toast({
-          title: '데이터가 갱신되지 않았습니다',
+          title: '데이터가 갱신되지 않았습니다.',
           description: '1분 뒤에 다시 시도해주세요.',
           variant: 'destructive',
         })
@@ -101,19 +104,31 @@ export default function FuturesRsiTable() {
 
   useEffect(() => {
     loadData()
+    setCountdown(REFRESH_INTERVAL_MS / 1000)
 
+    // 5분마다 데이터 로딩
     const intervalId = window.setInterval(() => {
-      console.log('[loadData] triggered by timer')
+      console.log('[loadData] triggered by timer', new Date().toISOString())
       loadData()
+      setCountdown(REFRESH_INTERVAL_MS / 1000) // 초기화
     }, REFRESH_INTERVAL_MS)
+    intervalIdRef.current = intervalId
 
+    // 1초마다 카운트다운 감소
     const countdownId = window.setInterval(() => {
       setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
     }, 1000)
+    countdownIdRef.current = countdownId
 
     return () => {
-      clearInterval(intervalId)
-      clearInterval(countdownId)
+      if (intervalIdRef.current !== null) {
+        clearInterval(intervalIdRef.current)
+        intervalIdRef.current = null
+      }
+      if (countdownIdRef.current !== null) {
+        clearInterval(countdownIdRef.current)
+        countdownIdRef.current = null
+      }
     }
   }, [])
 

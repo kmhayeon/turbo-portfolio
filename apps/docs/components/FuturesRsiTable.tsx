@@ -310,21 +310,25 @@ export default function FuturesRsiTable() {
                         </TableCell>
                         <TableCell className="flex items-center gap-2 px-2">
                           <img
-                            src={getCoinLogo(coin.symbol)}
+                            src={`/${getCoinName(coin.symbol).toUpperCase()}.png`}
                             alt={coin.symbol}
                             width={20}
                             height={20}
                             onError={(e) => {
-                              const symbol = getCoinName(coin.symbol).toUpperCase()
-                              const fallbackPath = `/${symbol}.png`
+                              const symbol = getCoinName(coin.symbol).toLowerCase()
+                              const fallbackURL = `https://cryptoicon-api.pages.dev/api/icon/${symbol}`
+
+                              // 첫 실패 시 외부 API로 대체
                               if (!e.currentTarget.dataset.retry) {
-                                e.currentTarget.src = fallbackPath
+                                e.currentTarget.src = fallbackURL
                                 e.currentTarget.dataset.retry = '1'
                               } else {
+                                // 두 번째 실패 시 기본 아이콘
                                 e.currentTarget.src = '/fallback-icon.png'
                               }
                             }}
                           />
+
                           {getCoinName(coin.symbol)}
                         </TableCell>
                         <TableCell

@@ -88,7 +88,7 @@ export default function FuturesRsiTable() {
       if (err.message.includes('429')) {
         toast({
           title: '데이터가 갱신되지 않았습니다',
-          description: '5초 뒤에 다시 시도해주세요.',
+          description: '1분 뒤에 다시 시도해주세요.',
           variant: 'destructive',
         })
       } else {

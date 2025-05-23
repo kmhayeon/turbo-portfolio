@@ -7,6 +7,7 @@ export const metadata = {
   description: 'Turtures',
   icons: {
     icon: '/favicon.ico',
+    apple: '/TURTURES_5.png',
   },
 }
 
